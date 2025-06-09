@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>연애 집착도 테스트 결과</title>
+</head>
+<body style="font-family: sans-serif; padding: 2rem;">
+  <h2>🟢 안정형 (Stable)</h2>
+  <p><strong>총점: 22점</strong></p>
+  <p>상대방을 존중하고, 건강한 거리감과 독립성을 유지할 수 있는 안정적인 연애 성향입니다.</p>
+  <h4>🧩 항목별 점수</h4>
+  <ul>
+    <li>관계 집착성: 2.1</li>
+    <li>통제 욕구: 2.3</li>
+    <li>거절 민감성: 1.8</li>
+    <li>자기중심성: 1.9</li>
+    <li>연애 신념: 2.7</li>
+  </ul>
+  <p>📧 <em>더 자세한 해석을 이메일로 받아보고 싶다면, 아래 버튼을 눌러주세요.</em></p>
+  <a href="https://forms.gle/너의폼링크" target="_blank">
+    <button style="padding: 0.5rem 1rem; font-size: 1rem;">결과 이메일 받기</button>
+  </a>
+</body>
+</html>
