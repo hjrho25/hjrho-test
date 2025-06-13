@@ -3,226 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>연애 집착도 테스트 결과</title>
+    <title>연애 집착도 테스트 - 결과 확인</title>
     <style>
-        body { 
-            font-family: "맑은 고딕", sans-serif; 
-            padding: 2em; 
-            max-width: 700px; 
-            margin: auto; 
-            background-color: #f5f5f5;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        h1 { 
-            color: #333366; 
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+        }
+
+        .message-section {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
             text-align: center;
         }
-        .box { 
-            border: 1px solid #ccc; 
-            padding: 1.5em; 
-            margin-top: 2em; 
-            border-radius: 10px; 
-            background-color: #f9f9f9; 
+
+        .result-section {
+            display: none;
+            animation: fadeIn 0.5s;
         }
-        .result-box {
-            background-color: #fff;
-            padding: 2em;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .type-danger { color: #dc3545; }
-        .type-warning { color: #ff6348; }
-        .type-caution { color: #ffa500; }
-        .type-stable { color: #28a745; }
-        .scale-block { 
-            margin-bottom: 1.2em; 
-            padding: 10px;
-            background-color: #f0f0f0;
-            border-radius: 8px;
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
         }
-        .high-score { 
-            color: #dc3545; 
-            font-weight: bold; 
-        }
-        .warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 8px;
+
+        .result-type {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.5em;
+            font-weight: bold;
             margin-top: 20px;
         }
-        .error {
+
+        .type-danger { 
+            background: #fee; 
+            color: #dc3545; 
+            border: 2px solid #dc3545;
+        }
+        .type-warning { 
+            background: #fff3cd; 
+            color: #ff6348; 
+            border: 2px solid #ff6348;
+        }
+        .type-caution { 
+            background: #fff8e1; 
+            color: #ffa500; 
+            border: 2px solid #ffa500;
+        }
+        .type-stable { 
+            background: #e8f5e9; 
+            color: #28a745; 
+            border: 2px solid #28a745;
+        }
+
+        .total-score {
+            font-size: 1.2em;
+            color: #4a5568;
+            margin-top: 10px;
+        }
+
+        .scale-item {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .scale-name {
+            font-weight: bold;
+            color: #2d3748;
+            font-size: 1.1em;
+        }
+
+        .scale-score {
+            color: #4a5568;
+            margin-top: 5px;
+        }
+
+        .scale-desc {
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .high-score {
             color: #dc3545;
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 30px 0;
             text-align: center;
-            padding: 2em;
+        }
+
+        .info-section {
+            background: #edf2f7;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .loading {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #f093fb;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <h1>📋 연애 집착도 테스트 결과</h1>
-    <div id="content"></div>
+    <div class="container">
+        <h1>💕 연애 집착도 테스트</h1>
+        <p class="subtitle">검사 결과 확인</p>
+
+        <!-- 메시지 섹션 -->
+        <div id="messageSection" class="message-section">
+            <div class="loading">
+                <div class="spinner"></div>
+                <h3>결과를 불러오는 중...</h3>
+                <p style="color: #718096; margin-top: 10px;">잠시만 기다려주세요.</p>
+            </div>
+        </div>
+
+        <!-- 결과 표시 섹션 -->
+        <div id="resultSection" class="result-section">
+            <div class="result-header">
+                <h2>검사 결과</h2>
+                <div id="resultType" class="result-type"></div>
+                <div id="totalScore" class="total-score"></div>
+            </div>
+
+            <h3 style="margin-bottom: 20px;">📊 하위 척도 상세</h3>
+            <div id="scaleResults">
+                <!-- 척도별 결과가 여기에 동적으로 생성됩니다 -->
+            </div>
+
+            <div id="warningBox" class="warning-box" style="display: none;">
+                <!-- 경고 메시지가 여기에 표시됩니다 -->
+            </div>
+
+            <div class="info-section">
+                <p>⚠️ 상세 해석과 맞춤 조언은 이메일 입력자에 한해 개별 발송됩니다.</p>
+                <p style="margin-top: 10px;">결과 리포트를 다시 받고 싶으시면 검사 마지막 페이지에서 이메일을 입력해주세요.</p>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // URL 파라미터에서 값 가져오기
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        // 척도별 문항 매핑
-        const scaleMapping = {
-            '관계집착성': [1, 6, 12, 18, 23, 27, 33, 36, 40, 43],
-            '통제욕구': [2, 7, 13, 19, 24, 28, 34, 37, 38, 41],
-            '거절민감성': [3, 8, 14, 20, 25, 29, 30, 35, 42, 44],
-            '자기중심성': [4, 9, 15, 21, 26],
-            '연애신념': [5, 10, 17, 32, 39]
-        };
-
-        // 결정문항
-        const criticalItems = [11, 22];
-
-        // 문항 번호 매핑 (주의점검 문항 제외)
-        const questionMapping = {
-            1: 'q1', 2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5',
-            6: 'q6', 7: 'q7', 8: 'q8', 9: 'q9', 10: 'q10',
-            11: 'q11', 12: 'q12', 13: 'q13', 14: 'q14', 15: 'q15',
-            17: 'q16', 18: 'q17', 19: 'q18', 20: 'q19', 21: 'q20',
-            22: 'q21', 23: 'q22', 24: 'q23', 25: 'q24', 26: 'q25',
-            27: 'q26', 28: 'q27', 29: 'q28', 30: 'q29', 32: 'q30',
-            33: 'q31', 34: 'q32', 35: 'q33', 36: 'q34', 37: 'q35',
-            38: 'q36', 39: 'q37', 40: 'q38', 41: 'q39', 42: 'q40',
-            43: 'q41', 44: 'q42'
-        };
-
-        function calculateResult() {
-            // 모든 문항이 있는지 확인
-            let allAnswered = true;
-            for (let i = 1; i <= 42; i++) {
-                if (!urlParams.get(`q${i}`)) {
-                    allAnswered = false;
-                    break;
-                }
-            }
-
-            if (!allAnswered) {
-                document.getElementById('content').innerHTML = 
-                    '<div class="error">모든 문항에 답변이 필요합니다. 검사를 다시 진행해주세요.</div>';
-                return;
-            }
-
-            // 척도별 점수 계산
-            const scores = {};
-            let totalScore = 0;
+        // 페이지 로드 시 자동 실행
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const responseId = urlParams.get('id');
             
-            for (const [scale, items] of Object.entries(scaleMapping)) {
-                let scaleSum = 0;
-                for (const item of items) {
-                    const paramName = questionMapping[item];
-                    const value = parseInt(urlParams.get(paramName) || '0');
-                    scaleSum += value;
-                }
-                scores[scale] = (scaleSum / items.length).toFixed(1);
-                totalScore += scaleSum;
-            }
-
-            // 결정문항 체크
-            let criticalChecked = false;
-            for (const item of criticalItems) {
-                const paramName = questionMapping[item];
-                const value = parseInt(urlParams.get(paramName) || '0');
-                if (value >= 4) {
-                    criticalChecked = true;
-                    break;
-                }
-            }
-
-            // 유형 판정
-            const avgScore = totalScore / 40;
-            let type = '';
-            let typeClass = '';
-
-            if (criticalChecked && avgScore >= 3.0) {
-                type = '🔴 위험형';
-                typeClass = 'type-danger';
-            } else if (criticalChecked && avgScore < 3.0) {
-                type = '🟠 경계형';
-                typeClass = 'type-warning';
-            } else if (!criticalChecked && avgScore >= 2.8) {
-                type = '🟡 주의형';
-                typeClass = 'type-caution';
+            if (responseId) {
+                // 1.5초 후 결과 표시 (로딩 효과)
+                setTimeout(() => {
+                    showResultById(responseId);
+                }, 1500);
             } else {
-                type = '🟢 안정형';
-                typeClass = 'type-stable';
+                document.getElementById('messageSection').innerHTML = `
+                    <h3 style="color: #e53e3e;">잘못된 접근입니다</h3>
+                    <p style="margin-top: 10px;">올바른 결과 링크를 통해 접속해주세요.</p>
+                `;
             }
+        };
 
-            // 결과 HTML 생성
-            let html = '<div class="result-box">';
-            html += `<p>검사 결과는 <span class="${typeClass}" style="font-weight: bold; font-size: 1.2em;">${type}</span>입니다.</p>`;
-            html += `<p>총점: <strong>${totalScore}점 / 210점</strong></p>`;
+        function showResultById(id) {
+            // 응답 번호별 결과 데이터
+            // 실제로는 엑셀에서 계산한 결과를 여기에 넣어야 함
+            const results = {
+                '1': {
+                    type: '주의형',
+                    totalScore: 98,
+                    scores: {
+                        '관계집착성': { score: 4.4, level: '높음' },
+                        '통제욕구': { score: 2.5, level: '보통' },
+                        '거절민감성': { score: 2.2, level: '낮음' },
+                        '자기중심성': { score: 2.8, level: '보통' },
+                        '연애신념': { score: 2.0, level: '낮음' }
+                    }
+                },
+                '2': {
+                    type: '안정형',
+                    totalScore: 85,
+                    scores: {
+                        '관계집착성': { score: 2.1, level: '낮음' },
+                        '통제욕구': { score: 2.3, level: '낮음' },
+                        '거절민감성': { score: 2.0, level: '낮음' },
+                        '자기중심성': { score: 1.8, level: '낮음' },
+                        '연애신념': { score: 1.9, level: '낮음' }
+                    }
+                }
+                // 더 많은 응답자 데이터 추가...
+            };
             
-            html += '<hr style="margin: 20px 0;">';
-            html += '<h3>📊 하위 척도 요약</h3>';
+            if (results[id]) {
+                displayResult(results[id]);
+            } else {
+                document.getElementById('messageSection').innerHTML = `
+                    <div style="text-align: center;">
+                        <h3 style="color: #e53e3e;">결과를 찾을 수 없습니다</h3>
+                        <p style="margin-top: 10px;">결과가 아직 처리 중이거나 잘못된 번호입니다.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayResult(result) {
+            document.getElementById('messageSection').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // 유형별 스타일 클래스
+            const typeClasses = {
+                '위험형': 'type-danger',
+                '경계형': 'type-warning',
+                '주의형': 'type-caution',
+                '안정형': 'type-stable'
+            };
+            
+            const typeEmojis = {
+                '위험형': '🔴',
+                '경계형': '🟠',
+                '주의형': '🟡',
+                '안정형': '🟢'
+            };
+            
+            // 기본 정보
+            const resultType = document.getElementById('resultType');
+            resultType.textContent = `${typeEmojis[result.type]} ${result.type}`;
+            resultType.className = `result-type ${typeClasses[result.type]}`;
+            
+            document.getElementById('totalScore').textContent = `총점: ${result.totalScore}점 / 210점`;
+            
+            // 척도별 결과
+            const scaleResults = document.getElementById('scaleResults');
+            scaleResults.innerHTML = '';
             
             let hasHighScore = false;
             let highScales = [];
-
-            for (const [scale, score] of Object.entries(scores)) {
-                const scoreFloat = parseFloat(score);
-                let level = '';
-                let scoreClass = '';
+            
+            Object.entries(result.scores).forEach(([scale, data]) => {
+                const scaleItem = document.createElement('div');
+                scaleItem.className = 'scale-item';
                 
-                if (scoreFloat >= 4.0) {
-                    level = '높음';
-                    scoreClass = 'high-score';
+                // 척도 설명
+                const scaleDescs = {
+                    '관계집착성': '상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.',
+                    '통제욕구': '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.',
+                    '거절민감성': '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.',
+                    '자기중심성': '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.',
+                    '연애신념': '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.'
+                };
+                
+                if (data.score >= 4.0) {
                     hasHighScore = true;
                     highScales.push(scale);
-                } else if (scoreFloat >= 2.5) {
-                    level = '보통';
-                } else {
-                    level = '낮음';
                 }
                 
-                let scaleDesc = '';
-                switch(scale) {
-                    case '관계집착성':
-                        scaleDesc = '상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.';
-                        break;
-                    case '통제욕구':
-                        scaleDesc = '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.';
-                        break;
-                    case '거절민감성':
-                        scaleDesc = '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.';
-                        break;
-                    case '자기중심성':
-                        scaleDesc = '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.';
-                        break;
-                    case '연애신념':
-                        scaleDesc = '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.';
-                        break;
-                }
+                const scoreClass = data.score >= 4.0 ? 'high-score' : '';
                 
-                html += `<div class="scale-block">`;
-                html += `<strong>${scale}</strong> (<span class="${scoreClass}">${score}점</span>, ${level}): ${scaleDesc}`;
-                html += `</div>`;
-            }
-
+                scaleItem.innerHTML = `
+                    <div class="scale-name">${scale}</div>
+                    <div class="scale-score">
+                        <span class="${scoreClass}">${data.score}점</span> (${data.level})
+                    </div>
+                    <div class="scale-desc">${scaleDescs[scale]}</div>
+                `;
+                
+                scaleResults.appendChild(scaleItem);
+            });
+            
             // 경고 메시지
             if (hasHighScore) {
-                html += `<div class="warning">`;
-                html += `⚠️ <strong>주의:</strong> 일부 척도(${highScales.join(', ')})에서 높은 반응이 확인되었습니다. `;
-                html += `해당 영역에서의 감정 관리나 관계 방식에 주의가 필요합니다.`;
-                html += `</div>`;
+                const warningBox = document.getElementById('warningBox');
+                warningBox.style.display = 'block';
+                warningBox.innerHTML = `
+                    ⚠️ <strong>주의:</strong> 일부 척도(${highScales.join(', ')})에서 높은 반응이 확인되었습니다.<br>
+                    해당 영역에서의 감정 관리나 관계 방식에 주의가 필요합니다.
+                `;
             }
-
-            html += '<hr style="margin: 20px 0;">';
-            html += '<p>⚠️ 상세 해석과 맞춤 조언은 이메일 입력자에 한해 개별 발송됩니다.</p>';
-            html += '<p>결과 리포트를 다시 받고 싶으시면 검사 마지막 페이지에서 이메일을 입력해주세요.</p>';
-            html += '</div>';
-
-            document.getElementById('content').innerHTML = html;
         }
-
-        // 페이지 로드 시 자동 실행
-        window.onload = function() {
-            calculateResult();
-        };
     </script>
 </body>
 </html>
