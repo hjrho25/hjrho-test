@@ -2,32 +2,227 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>연애 성향 검사 간단 결과</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연애 집착도 테스트 결과</title>
     <style>
-        body { font-family: "맑은 고딕", sans-serif; padding: 2em; max-width: 700px; margin: auto; }
-        h1 { color: #333366; }
-        .box { border: 1px solid #ccc; padding: 1.5em; margin-top: 2em; border-radius: 10px; background-color: #f9f9f9; }
-        .highlight { font-weight: bold; color: #cc0000; }
-        .scale-block { margin-bottom: 1.2em; }
+        body { 
+            font-family: "맑은 고딕", sans-serif; 
+            padding: 2em; 
+            max-width: 700px; 
+            margin: auto; 
+            background-color: #f5f5f5;
+        }
+        h1 { 
+            color: #333366; 
+            text-align: center;
+        }
+        .box { 
+            border: 1px solid #ccc; 
+            padding: 1.5em; 
+            margin-top: 2em; 
+            border-radius: 10px; 
+            background-color: #f9f9f9; 
+        }
+        .result-box {
+            background-color: #fff;
+            padding: 2em;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .type-danger { color: #dc3545; }
+        .type-warning { color: #ff6348; }
+        .type-caution { color: #ffa500; }
+        .type-stable { color: #28a745; }
+        .scale-block { 
+            margin-bottom: 1.2em; 
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+        }
+        .high-score { 
+            color: #dc3545; 
+            font-weight: bold; 
+        }
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .error {
+            color: #dc3545;
+            text-align: center;
+            padding: 2em;
+        }
     </style>
 </head>
 <body>
-    <h1>📋 연애 성향 검사 간단 결과</h1>
-    <div class="box">
-        <p><strong>홍길동</strong>님의 검사 결과는 <span class="highlight">🟡 주의형</span>입니다.</p>
-        <p>총점: <strong>98점 / 210점</strong></p>
+    <h1>📋 연애 집착도 테스트 결과</h1>
+    <div id="content"></div>
 
-        <hr>
-        <h3>📊 하위 척도 요약</h3>
-        <div class="scale-block"><strong>관계집착성</strong> (4.4점, 높음): 상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.</div>
-        <div class="scale-block"><strong>통제욕구</strong> (2.5점, 보통): 상대방의 일정, 행동, 관계를 조율하려는 경향입니다.</div>
-        <div class="scale-block"><strong>거절민감성</strong> (2.2점, 낮음): 거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.</div>
-        <div class="scale-block"><strong>자기중심성</strong> (2.8점, 보통): 연애에서 자신의 시각이나 감정에 집중하는 경향입니다.</div>
-        <div class="scale-block"><strong>연애신념</strong> (2.0점, 낮음): 연애에 대한 고정관념 또는 이상화 경향을 측정합니다.</div>
+    <script>
+        // URL 파라미터에서 값 가져오기
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // 척도별 문항 매핑
+        const scaleMapping = {
+            '관계집착성': [1, 6, 12, 18, 23, 27, 33, 36, 40, 43],
+            '통제욕구': [2, 7, 13, 19, 24, 28, 34, 37, 38, 41],
+            '거절민감성': [3, 8, 14, 20, 25, 29, 30, 35, 42, 44],
+            '자기중심성': [4, 9, 15, 21, 26],
+            '연애신념': [5, 10, 17, 32, 39]
+        };
 
-        <hr>
-        <p>⚠️ 상세 해석과 맞춤 조언은 이메일 입력자에 한해 개별 발송되었습니다.</p>
-        <p>결과 리포트를 다시 받고 싶으시면 검사 마지막 페이지에서 이메일을 입력해주세요.</p>
-    </div>
+        // 결정문항
+        const criticalItems = [11, 22];
+
+        // 문항 번호 매핑 (주의점검 문항 제외)
+        const questionMapping = {
+            1: 'q1', 2: 'q2', 3: 'q3', 4: 'q4', 5: 'q5',
+            6: 'q6', 7: 'q7', 8: 'q8', 9: 'q9', 10: 'q10',
+            11: 'q11', 12: 'q12', 13: 'q13', 14: 'q14', 15: 'q15',
+            17: 'q16', 18: 'q17', 19: 'q18', 20: 'q19', 21: 'q20',
+            22: 'q21', 23: 'q22', 24: 'q23', 25: 'q24', 26: 'q25',
+            27: 'q26', 28: 'q27', 29: 'q28', 30: 'q29', 32: 'q30',
+            33: 'q31', 34: 'q32', 35: 'q33', 36: 'q34', 37: 'q35',
+            38: 'q36', 39: 'q37', 40: 'q38', 41: 'q39', 42: 'q40',
+            43: 'q41', 44: 'q42'
+        };
+
+        function calculateResult() {
+            // 모든 문항이 있는지 확인
+            let allAnswered = true;
+            for (let i = 1; i <= 42; i++) {
+                if (!urlParams.get(`q${i}`)) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+
+            if (!allAnswered) {
+                document.getElementById('content').innerHTML = 
+                    '<div class="error">모든 문항에 답변이 필요합니다. 검사를 다시 진행해주세요.</div>';
+                return;
+            }
+
+            // 척도별 점수 계산
+            const scores = {};
+            let totalScore = 0;
+            
+            for (const [scale, items] of Object.entries(scaleMapping)) {
+                let scaleSum = 0;
+                for (const item of items) {
+                    const paramName = questionMapping[item];
+                    const value = parseInt(urlParams.get(paramName) || '0');
+                    scaleSum += value;
+                }
+                scores[scale] = (scaleSum / items.length).toFixed(1);
+                totalScore += scaleSum;
+            }
+
+            // 결정문항 체크
+            let criticalChecked = false;
+            for (const item of criticalItems) {
+                const paramName = questionMapping[item];
+                const value = parseInt(urlParams.get(paramName) || '0');
+                if (value >= 4) {
+                    criticalChecked = true;
+                    break;
+                }
+            }
+
+            // 유형 판정
+            const avgScore = totalScore / 40;
+            let type = '';
+            let typeClass = '';
+
+            if (criticalChecked && avgScore >= 3.0) {
+                type = '🔴 위험형';
+                typeClass = 'type-danger';
+            } else if (criticalChecked && avgScore < 3.0) {
+                type = '🟠 경계형';
+                typeClass = 'type-warning';
+            } else if (!criticalChecked && avgScore >= 2.8) {
+                type = '🟡 주의형';
+                typeClass = 'type-caution';
+            } else {
+                type = '🟢 안정형';
+                typeClass = 'type-stable';
+            }
+
+            // 결과 HTML 생성
+            let html = '<div class="result-box">';
+            html += `<p>검사 결과는 <span class="${typeClass}" style="font-weight: bold; font-size: 1.2em;">${type}</span>입니다.</p>`;
+            html += `<p>총점: <strong>${totalScore}점 / 210점</strong></p>`;
+            
+            html += '<hr style="margin: 20px 0;">';
+            html += '<h3>📊 하위 척도 요약</h3>';
+            
+            let hasHighScore = false;
+            let highScales = [];
+
+            for (const [scale, score] of Object.entries(scores)) {
+                const scoreFloat = parseFloat(score);
+                let level = '';
+                let scoreClass = '';
+                
+                if (scoreFloat >= 4.0) {
+                    level = '높음';
+                    scoreClass = 'high-score';
+                    hasHighScore = true;
+                    highScales.push(scale);
+                } else if (scoreFloat >= 2.5) {
+                    level = '보통';
+                } else {
+                    level = '낮음';
+                }
+                
+                let scaleDesc = '';
+                switch(scale) {
+                    case '관계집착성':
+                        scaleDesc = '상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.';
+                        break;
+                    case '통제욕구':
+                        scaleDesc = '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.';
+                        break;
+                    case '거절민감성':
+                        scaleDesc = '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.';
+                        break;
+                    case '자기중심성':
+                        scaleDesc = '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.';
+                        break;
+                    case '연애신념':
+                        scaleDesc = '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.';
+                        break;
+                }
+                
+                html += `<div class="scale-block">`;
+                html += `<strong>${scale}</strong> (<span class="${scoreClass}">${score}점</span>, ${level}): ${scaleDesc}`;
+                html += `</div>`;
+            }
+
+            // 경고 메시지
+            if (hasHighScore) {
+                html += `<div class="warning">`;
+                html += `⚠️ <strong>주의:</strong> 일부 척도(${highScales.join(', ')})에서 높은 반응이 확인되었습니다. `;
+                html += `해당 영역에서의 감정 관리나 관계 방식에 주의가 필요합니다.`;
+                html += `</div>`;
+            }
+
+            html += '<hr style="margin: 20px 0;">';
+            html += '<p>⚠️ 상세 해석과 맞춤 조언은 이메일 입력자에 한해 개별 발송됩니다.</p>';
+            html += '<p>결과 리포트를 다시 받고 싶으시면 검사 마지막 페이지에서 이메일을 입력해주세요.</p>';
+            html += '</div>';
+
+            document.getElementById('content').innerHTML = html;
+        }
+
+        // 페이지 로드 시 자동 실행
+        window.onload = function() {
+            calculateResult();
+        };
+    </script>
 </body>
 </html>
