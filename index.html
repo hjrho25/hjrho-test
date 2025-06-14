@@ -915,458 +915,456 @@
             }
         }
         
-        // 결과 계산 및 표시
-        function calculateResult(e) {
-            e.preventDefault();
-            
-            // 주의점검 문항 확인
-            const check1 = document.querySelector('input[name="q16"]:checked');
-            const check2 = document.querySelector('input[name="q31"]:checked');
-            
-            if (!check1 || check1.value !== '1' || !check2 || check2.value !== '5') {
-                alert('주의점검 문항에 올바르게 응답해주세요.\n문항 16번은 "전혀 그렇지 않다"를, 문항 31번은 "매우 그렇다"를 선택해주세요.');
-                return;
+// 결과 계산 및 표시
+function calculateResult(e) {
+    e.preventDefault();
+    
+    // 주의점검 문항 확인
+    const check1 = document.querySelector('input[name="q16"]:checked');
+    const check2 = document.querySelector('input[name="q31"]:checked');
+    
+    if (!check1 || check1.value !== '1' || !check2 || check2.value !== '5') {
+        alert('주의점검 문항에 올바르게 응답해주세요.\n문항 16번은 "전혀 그렇지 않다"를, 문항 31번은 "매우 그렇다"를 선택해주세요.');
+        return;
+    }
+    
+    // 점수 계산
+    let scores = {
+        attachment: 0,
+        control: 0,
+        rejection: 0,
+        selfcenter: 0,
+        belief: 0
+    };
+    
+    let decisionCount = 0;
+    
+    questions.forEach(q => {
+        if (q.scale !== 'check' && q.scale !== 'decision') {
+            const answer = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (answer) {
+                scores[q.scale] += parseInt(answer.value);
             }
-            
-            // 점수 계산
-            let scores = {
-                attachment: 0,
-                control: 0,
-                rejection: 0,
-                selfcenter: 0,
-                belief: 0
-            };
-            
-            let decisionCount = 0;
-            
-            questions.forEach(q => {
-                if (q.scale !== 'check' && q.scale !== 'decision') {
-                    const answer = document.querySelector(`input[name="q${q.id}"]:checked`);
-                    if (answer) {
-                        scores[q.scale] += parseInt(answer.value);
-                    }
-                } else if (q.scale === 'decision') {
-                    const answer = document.querySelector(`input[name="q${q.id}"]:checked`);
-                    if (answer && parseInt(answer.value) >= 4) {
-                        decisionCount++;
-                    }
+        } else if (q.scale === 'decision') {
+            const answer = document.querySelector(`input[name="q${q.id}"]:checked`);
+            if (answer && parseInt(answer.value) >= 4) {
+                decisionCount++;
+            }
+        }
+    });
+    
+    // 총점 계산
+    const scaleTotal = scores.attachment + scores.control + scores.rejection + 
+                     scores.selfcenter + scores.belief;
+    const decisionScore = decisionCount * 5;
+    const totalScore = scaleTotal + decisionScore;
+    
+    // 결과 유형 판정
+    let resultType = '';
+    let typeClass = '';
+    let typeDescription = '';
+    
+    if (decisionCount > 0 && totalScore >= 158) {
+        resultType = '🔴 위험형';
+        typeClass = 'type-danger';
+        typeDescription = '귀하의 응답 결과, 즉시 주의가 필요한 행동 패턴이 발견되었습니다. 현재의 연애 방식이 상대방에게 부담을 주거나 관계에 부정적 영향을 미칠 가능성이 높습니다. 전문가의 도움을 통해 건강한 관계를 만들어갈 수 있습니다.';
+    } else if (decisionCount > 0 && totalScore < 158) {
+        resultType = '🟠 경계형';
+        typeClass = 'type-warning';
+        typeDescription = '일부 우려되는 행동이 있지만, 전반적인 성향은 상대적으로 안정적입니다. 그러나 특정 상황에서 문제가 될 수 있는 행동들이 관찰되므로 주의가 필요합니다.';
+    } else if (decisionCount === 0 && totalScore >= 147) {
+        resultType = '🟡 주의형';
+        typeClass = 'type-caution';
+        typeDescription = '경계를 넘는 직접적 행동은 없지만, 내면의 집착 성향이 다소 높게 나타났습니다. 적절한 자기 관리와 성찰을 통해 건강한 연애를 할 수 있습니다.';
+    } else {
+        resultType = '🟢 안정형';
+        typeClass = 'type-safe';
+        typeDescription = '매우 건강한 연애 성향을 보이고 있습니다! 상대방을 존중하고 적절한 거리감을 유지하며, 균형잡힌 관계를 형성할 수 있는 능력을 갖추고 있습니다.';
+    }
+    
+    // 기본 정보 가져오기
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    
+    // 결과 표시
+    document.getElementById('resultName').textContent = name;
+    document.getElementById('resultType').innerHTML = `<span class="${typeClass}">${resultType}</span>`;
+    document.getElementById('typeDescription').textContent = typeDescription;
+    
+    // 척도별 결과
+    const scaleDescriptions = {
+        attachment: {
+            name: '관계집착성',
+            max: 50,
+            desc: '상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.',
+            high: '상대방에 대한 관심이 매우 강해요. 때로는 여유를 갖고 거리를 두는 것도 필요해요.',
+            medium: '적당한 관심과 애착을 보여주는 편이에요. 균형감이 좋습니다.',
+            low: '독립적이고 여유로운 연애 스타일이에요. 가끔은 더 적극적인 관심 표현도 좋을 거예요.'
+        },
+        control: {
+            name: '통제욕구',
+            max: 50,
+            desc: '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.',
+            high: '상대방을 내맘대로 이끌고 싶어하는 성향이 강해요. 상대방의 자율성을 더 존중해보세요.',
+            medium: '적절한 수준에서 연애관계를 이끌어가는 편이에요.',
+            low: '상대방의 자유를 잘 존중하는 편이에요. 때로는 더 적극적으로 자신의 의견을 표현해도 좋아요.'
+        },
+        rejection: {
+            name: '거절민감성',
+            max: 50,
+            desc: '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.',
+            high: '거절에 매우 민감하게 반응하는 편이에요. 거절도 자연스러운 일임을 받아들여보세요.',
+            medium: '거절에 대한 반응이 적절한 수준이에요.',
+            low: '거절을 잘 받아들이는 성숙한 모습이에요. 좋은 장점입니다.'
+        },
+        selfcenter: {
+            name: '자기중심성',
+            max: 25,
+            desc: '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.',
+            high: '자신의 관점에서 상황을 해석하는 경향이 강해요. 상대방 입장에서 생각해보는 연습이 필요해요.',
+            medium: '자신과 상대방의 관점을 적절히 고려하는 편이에요.',
+            low: '상대방을 잘 배려하는 성향이에요. 균형감이 좋습니다.'
+        },
+        belief: {
+            name: '연애신념',
+            max: 25,
+            desc: '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.',
+            high: '연애에 대한 고정된 생각이 강한 편이에요. 좀 더 유연한 사고가 필요할 수 있어요.',
+            medium: '연애에 대한 생각이 적절한 수준이에요.',
+            low: '연애에 대해 유연하고 개방적인 사고를 갖고 있어요.'
+        }
+    };
+    
+    let scaleHTML = '';
+    
+    for (const [key, score] of Object.entries(scores)) {
+        const scale = scaleDescriptions[key];
+        const average = score / (scale.max / 5);
+        const isCaution = average >= 4.0;
+        
+        let level, levelDesc;
+        if (average >= 4.0) {
+            level = '높음';
+            levelDesc = scale.high;
+        } else if (average >= 2.5) {
+            level = '보통';
+            levelDesc = scale.medium;
+        } else {
+            level = '낮음';
+            levelDesc = scale.low;
+        }
+        
+        scaleHTML += `
+            <div class="scale-result ${isCaution ? 'caution' : ''}">
+                <strong class="scale-name">${scale.name}${isCaution ? ' ⚠️' : ''}</strong> 
+                (${average.toFixed(1)}점, ${level}): ${scale.desc}
+            </div>
+        `;
+    }
+    
+    document.getElementById('scaleResults').innerHTML = scaleHTML;
+    
+    // 폼 숨기고 결과 표시
+    document.getElementById('testForm').style.display = 'none';
+    document.getElementById('resultSection').style.display = 'block';
+    
+    // 스크롤 이동
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // 이메일 발송 처리
+    if (email) {
+        console.log('이메일 발송 대상:', email);
+        
+        // 이메일 발송을 위한 상세 데이터 준비
+        const emailData = {
+            email: email,
+            name: name,
+            result_type: resultType.replace(/[🔴🟠🟡🟢]/g, '').trim(),
+            result_color: typeClass === 'type-danger' ? '#dc3545' : 
+                         typeClass === 'type-warning' ? '#fd7e14' : 
+                         typeClass === 'type-caution' ? '#ffc107' : '#28a745',
+            type_description: typeDescription,
+            closing_message: '당신의 아름답고 건강한 연애를 응원합니다 💝'
+        };
+        
+        // 각 척도별 상세 데이터 추가
+        const scaleDetails = {
+            attachment: {
+                caution: {
+                    high: '- 하루 SNS 확인은 아침, 저녁 2회로 제한',
+                    medium: '- 상대방의 독립적 활동 존중하기',
+                    low: '- 때로는 더 적극적인 관심 표현 필요'
+                },
+                method: {
+                    high: '- 나만의 독립적 생활 영역 구축하기',
+                    medium: '- 현재의 적절한 관심 수준 유지',
+                    low: '- 의식적으로 애정 표현 늘리기'
+                },
+                task: {
+                    high: '- 매일 2시간 휴대폰 없이 보내기',
+                    medium: '- 주 1회 각자 시간 갖기 약속',
+                    low: '- 하루 1번은 먼저 안부 묻기'
+                },
+                match: {
+                    high: '- 독립적이면서 일관된 애정표현을 하는 사람',
+                    medium: '- 연락을 일부러 끊는 밀당형 사람',
+                    low: '- 과도한 관심과 애정을 요구하는 사람'
                 }
+            },
+            control: {
+                caution: {
+                    high: '- 상대방의 개인 일정 간섭하지 않기',
+                    medium: '- 중요한 결정은 함께, 작은 일은 각자',
+                    low: '- 때로는 더 적극적으로 의견 제시하기'
+                },
+                method: {
+                    high: '- 상대방의 자율성 존중하는 법 배우기',
+                    medium: '- 건강한 의사결정 과정 만들기',
+                    low: '- 건강한 주도성 기르기'
+                },
+                task: {
+                    high: '- 상대방 일정 묻지 않고 하루 보내기',
+                    medium: '- 상대방 의견 먼저 묻고 듣기',
+                    low: '- 데이트 계획 직접 세워보기'
+                },
+                match: {
+                    high: '- 독립적이면서도 소통에 적극적인 사람',
+                    medium: '- 모든 것을 의존하려는 사람',
+                    low: '- 모든 것을 통제하려는 지배적인 사람'
+                }
+            },
+            rejection: {
+                caution: {
+                    high: '- 작은 거절도 관계 종료 신호로 오해하지 않기',
+                    medium: '- 거절의 의미를 과대해석하지 않기',
+                    low: '- 상대방의 감정 신호를 놓치지 않기'
+                },
+                method: {
+                    high: '- 거절도 건강한 관계의 일부임을 알기',
+                    medium: '- 거절을 성장의 기회로 받아들이기',
+                    low: '- 상대방의 감정을 세심하게 관찰하기'
+                },
+                task: {
+                    high: '- 거절당했을 때 "괜찮아" 말하고 넘기기',
+                    medium: '- 거절당했을 때 심호흡 3번 하기',
+                    low: '- 상대방 표정과 톤 관찰하기'
+                },
+                match: {
+                    high: '- 부드럽지만 명확한 의사표현을 하는 사람',
+                    medium: '- 너무 자주 거절하는 사람',
+                    low: '- 심하게 예민하고 감정적인 사람'
+                }
+            },
+            selfcenter: {
+                caution: {
+                    high: '- 대화 중 상대방 이야기 끝까지 듣기',
+                    medium: '- 나와 상대방의 욕구 균형 맞추기',
+                    low: '- 자신의 욕구와 감정도 표현하기'
+                },
+                method: {
+                    high: '- 경청 기술 의식적으로 연습하기',
+                    medium: '- 건강한 주고받기 생활화',
+                    low: '- 건강한 자기 주장 연습하기'
+                },
+                task: {
+                    high: '- 대화 중 상대방 말 요약해서 확인하기',
+                    medium: '- 의견 차이 시 중간지점 찾기 연습',
+                    low: '- 원하는 것 3가지 적고 상대방에게 전달하기'
+                },
+                match: {
+                    high: '- 자기 주장이 명확하면서도 유연한 사람',
+                    medium: '- 항상 자기 희생만 하는 사람',
+                    low: '- 일방적으로 요구만 하는 사람'
+                }
+            },
+            belief: {
+                caution: {
+                    high: '- "연애는 이래야 해" 라는 고정관념 버리기',
+                    medium: '- 이상과 현실의 균형 맞추기',
+                    low: '- 관계에 대한 최소한의 기대치는 가지기'
+                },
+                method: {
+                    high: '- 다양한 사랑의 형태 인정하기',
+                    medium: '- 서로의 연애 가치관 공유하기',
+                    low: '- 건강한 관계의 기준 세우기'
+                },
+                task: {
+                    high: '- 연애 고정관념 3가지 적고 의미를 다시 생각하기',
+                    medium: '- 서로의 연애관에 대한 대화 시간 갖기',
+                    low: '- 관계에서 중요한 가치 3가지 정하기'
+                },
+                match: {
+                    high: '- 관계에 대해 유연하고 성숙한 관점을 가진 사람',
+                    medium: '- 지나치게 환상적이거나 비현실적인 사람',
+                    low: '- 모든 것을 드라마처럼 만들려는 사람'
+                }
+            }
+        };
+        
+        // 각 척도별 데이터 설정
+        for (const [key, score] of Object.entries(scores)) {
+            const scale = scaleDescriptions[key];
+            const average = score / (scale.max / 5);
+            const level = average >= 4.0 ? 'high' : average >= 2.5 ? 'medium' : 'low';
+            const levelText = average >= 4.0 ? '높음' : average >= 2.5 ? '보통' : '낮음';
+            const color = average >= 4.0 ? '#ff6b6b' : '#667eea';
+            
+            emailData[`${key}_score`] = average.toFixed(1);
+            emailData[`${key}_level`] = levelText;
+            emailData[`${key}_color`] = color;
+            emailData[`${key}_desc`] = scale[level];
+            emailData[`${key}_caution`] = scaleDetails[key].caution[level];
+            emailData[`${key}_method`] = scaleDetails[key].method[level];
+            emailData[`${key}_task`] = scaleDetails[key].task[level];
+            emailData[`${key}_match_title`] = level === 'high' ? '당신과 잘 맞는 관계 유형' : 
+                                               level === 'medium' ? '피해야 할 관계 유형' : 
+                                               '주의해야 할 관계 연애 상대';
+            emailData[`${key}_match`] = scaleDetails[key].match[level];
+        }
+        
+        // 추가 조언
+        if (typeClass === 'type-danger') {
+            emailData.additional_advice = '전문가의 도움을 받는 것을 강력히 권장합니다. 현재의 패턴이 지속되면 건강한 관계 형성이 어려울 수 있습니다. 상담을 통해 자신의 감정과 행동을 이해하고, 더 나은 관계를 만들어갈 수 있습니다.';
+        } else if (typeClass === 'type-warning') {
+            emailData.additional_advice = '특정 상황에서 나타나는 행동 패턴에 주의를 기울이세요. 자기 성찰과 노력을 통해 충분히 개선할 수 있습니다. 필요시 전문가의 조언을 구하는 것도 좋은 방법입니다.';
+        } else if (typeClass === 'type-caution') {
+            emailData.additional_advice = '전반적으로 건강한 연애를 할 수 있는 역량을 가지고 있습니다. 다만 일부 영역에서 주의가 필요하니, 제공된 실천 과제를 꾸준히 실행해보세요.';
+        } else {
+            emailData.additional_advice = '매우 건강한 연애 성향을 가지고 있습니다! 현재의 긍정적인 태도를 유지하면서, 상대방과 함께 성장하는 아름다운 관계를 만들어가세요.';
+        }
+        
+        // 이메일 발송
+        emailjs.send('service_bm4sr1r', 'template_8kvuhuj', emailData)
+            .then(function(response) {
+                console.log('이메일 발송 성공!', response.status, response.text);
+            }, function(error) {
+                console.log('이메일 발송 실패...', error);
             });
-            
-            // 총점 계산
-            const scaleTotal = scores.attachment + scores.control + scores.rejection + 
-                             scores.selfcenter + scores.belief;
-            const decisionScore = decisionCount * 5;
-            const totalScore = scaleTotal + decisionScore;
-            
-            // 결과 유형 판정
-            let resultType = '';
-            let typeClass = '';
-            let typeDescription = '';
-            
-            if (decisionCount > 0 && totalScore >= 158) {
-                resultType = '🔴 위험형';
-                typeClass = 'type-danger';
-                typeDescription = '귀하의 응답 결과, 즉시 주의가 필요한 행동 패턴이 발견되었습니다. 현재의 연애 방식이 상대방에게 부담을 주거나 관계에 부정적 영향을 미칠 가능성이 높습니다. 전문가의 도움을 통해 건강한 관계를 만들어갈 수 있습니다.';
-            } else if (decisionCount > 0 && totalScore < 158) {
-                resultType = '🟠 경계형';
-                typeClass = 'type-warning';
-                typeDescription = '일부 우려되는 행동이 있지만, 전반적인 성향은 상대적으로 안정적입니다. 그러나 특정 상황에서 문제가 될 수 있는 행동들이 관찰되므로 주의가 필요합니다.';
-            } else if (decisionCount === 0 && totalScore >= 147) {
-                resultType = '🟡 주의형';
-                typeClass = 'type-caution';
-                typeDescription = '경계를 넘는 직접적 행동은 없지만, 내면의 집착 성향이 다소 높게 나타났습니다. 적절한 자기 관리와 성찰을 통해 건강한 연애를 할 수 있습니다.';
-            } else {
-                resultType = '🟢 안정형';
-                typeClass = 'type-safe';
-                typeDescription = '매우 건강한 연애 성향을 보이고 있습니다! 상대방을 존중하고 적절한 거리감을 유지하며, 균형잡힌 관계를 형성할 수 있는 능력을 갖추고 있습니다.';
-            }
-            
-            // 마무리 인사말 추가
-emailData.closing_message = '당신의 아름답고 건강한 연애를 응원합니다 💝';
-            
-            // 결과 표시
-            const name = document.getElementById('name').value;
-            document.getElementById('resultName').textContent = name;
-            document.getElementById('resultType').innerHTML = `<span class="${typeClass}">${resultType}</span>`;
-            document.getElementById('typeDescription').textContent = typeDescription;
-            
-            // 척도별 결과
-            const scaleDescriptions = {
-                attachment: {
-                    name: '관계집착성',
-                    max: 50,
-                    desc: '상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.',
-                    high: '상대방에 대한 관심이 매우 강해요. 때로는 여유를 갖고 거리를 두는 것도 필요해요.',
-                    medium: '적당한 관심과 애착을 보여주는 편이에요. 균형감이 좋습니다.',
-                    low: '독립적이고 여유로운 연애 스타일이에요. 가끔은 더 적극적인 관심 표현도 좋을 거예요.'
-                },
-                control: {
-                    name: '통제욕구',
-                    max: 50,
-                    desc: '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.',
-                    high: '상대방을 내맘대로 이끌고 싶어하는 성향이 강해요. 상대방의 자율성을 더 존중해보세요.',
-                    medium: '적절한 수준에서 연애관계를 이끌어가는 편이에요.',
-                    low: '상대방의 자유를 잘 존중하는 편이에요. 때로는 더 적극적으로 자신의 의견을 표현해도 좋아요.'
-                },
-                rejection: {
-                    name: '거절민감성',
-                    max: 50,
-                    desc: '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.',
-                    high: '거절에 매우 민감하게 반응하는 편이에요. 거절도 자연스러운 일임을 받아들여보세요.',
-                    medium: '거절에 대한 반응이 적절한 수준이에요.',
-                    low: '거절을 잘 받아들이는 성숙한 모습이에요. 좋은 장점입니다.'
-                },
-                selfcenter: {
-                    name: '자기중심성',
-                    max: 25,
-                    desc: '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.',
-                    high: '자신의 관점에서 상황을 해석하는 경향이 강해요. 상대방 입장에서 생각해보는 연습이 필요해요.',
-                    medium: '자신과 상대방의 관점을 적절히 고려하는 편이에요.',
-                    low: '상대방을 잘 배려하는 성향이에요. 균형감이 좋습니다.'
-                },
-                belief: {
-                    name: '연애신념',
-                    max: 25,
-                    desc: '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.',
-                    high: '연애에 대한 고정된 생각이 강한 편이에요. 좀 더 유연한 사고가 필요할 수 있어요.',
-                    medium: '연애에 대한 생각이 적절한 수준이에요.',
-                    low: '연애에 대해 유연하고 개방적인 사고를 갖고 있어요.'
-                }
-            };
-            
-            let scaleHTML = '';
-            
-            for (const [key, score] of Object.entries(scores)) {
-                const scale = scaleDescriptions[key];
-                const average = score / (scale.max / 5);
-                const isCaution = average >= 4.0;
-                
-                let level, levelDesc;
-                if (average >= 4.0) {
-                    level = '높음';
-                    levelDesc = scale.high;
-                } else if (average >= 2.5) {
-                    level = '보통';
-                    levelDesc = scale.medium;
-                } else {
-                    level = '낮음';
-                    levelDesc = scale.low;
-                }
-                
-                scaleHTML += `
-                    <div class="scale-result ${isCaution ? 'caution' : ''}">
-                        <strong class="scale-name">${scale.name}${isCaution ? ' ⚠️' : ''}</strong> 
-                        (${average.toFixed(1)}점, ${level}): ${scale.desc}
-                    </div>
-                `;
-            }
-            
-            document.getElementById('scaleResults').innerHTML = scaleHTML;
-            
-            // 폼 숨기고 결과 표시
-            document.getElementById('testForm').style.display = 'none';
-            document.getElementById('resultSection').style.display = 'block';
-            
-            // 스크롤 이동
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // 이메일 입력 확인
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            
-            if (email) {
-                console.log('이메일 발송 대상:', email);
-                       
-                
-                // 이메일 발송을 위한 상세 데이터 준비
-                const emailData = {
-                    email: email,
-                    name: name,
-                    result_type: resultType.replace(/[🔴🟠🟡🟢]/g, '').trim(),
-                    result_color: typeClass === 'type-danger' ? '#dc3545' : 
-                                 typeClass === 'type-warning' ? '#fd7e14' : 
-                                 typeClass === 'type-caution' ? '#ffc107' : '#28a745',
-                    type_description: typeDescription
-                };
-
-           }      
-            if (phone) {
-                console.log('경품 추첨 대상:', phone);
-            }
-                
-                // 각 척도별 상세 데이터 추가
-                const scaleDetails = {
-                    attachment: {
-                        caution: {
-                            high: '- 하루 SNS 확인은 아침, 저녁 2회로 제한',
-                            medium: '- 상대방의 독립적 활동 존중하기',
-                            low: '- 때로는 더 적극적인 관심 표현 필요'
-                        },
-                        method: {
-                            high: '- 나만의 독립적 생활 영역 구축하기',
-                            medium: '- 현재의 적절한 관심 수준 유지',
-                            low: '- 의식적으로 애정 표현 늘리기'
-                        },
-                        task: {
-                            high: '- 매일 2시간 휴대폰 없이 보내기',
-                            medium: '- 주 1회 각자 시간 갖기 약속',
-                            low: '- 하루 1번은 먼저 안부 묻기'
-                        },
-                        match: {
-                            high: '- 독립적이면서 일관된 애정표현을 하는 사람',
-                            medium: '- 연락을 일부러 끊는 밀당형 사람',
-                            low: '- 과도한 관심과 애정을 요구하는 사람'
-                        }
-                    },
-                    control: {
-                        caution: {
-                            high: '- 상대방의 개인 일정 간섭하지 않기',
-                            medium: '- 중요한 결정은 함께, 작은 일은 각자',
-                            low: '- 때로는 더 적극적으로 의견 제시하기'
-                        },
-                        method: {
-                            high: '- 상대방의 자율성 존중하는 법 배우기',
-                            medium: '- 건강한 의사결정 과정 만들기',
-                            low: '- 건강한 주도성 기르기'
-                        },
-                        task: {
-                            high: '- 상대방 일정 묻지 않고 하루 보내기',
-                            medium: '- 상대방 의견 먼저 묻고 듣기',
-                            low: '- 데이트 계획 직접 세워보기'
-                        },
-                        match: {
-                            high: '- 독립적이면서도 소통에 적극적인 사람',
-                            medium: '- 모든 것을 의존하려는 사람',
-                            low: '- 모든 것을 통제하려는 지배적인 사람'
-                        }
-                    },
-                    rejection: {
-                        caution: {
-                            high: '- 작은 거절도 관계 종료 신호로 오해하지 않기',
-                            medium: '- 거절의 의미를 과대해석하지 않기',
-                            low: '- 상대방의 감정 신호를 놓치지 않기'
-                        },
-                        method: {
-                            high: '- 거절도 건강한 관계의 일부임을 알기',
-                            medium: '- 거절을 성장의 기회로 받아들이기',
-                            low: '- 상대방의 감정을 세심하게 관찰하기'
-                        },
-                        task: {
-                            high: '- 거절당했을 때 "괜찮아" 말하고 넘기기',
-                            medium: '- 거절당했을 때 심호흡 3번 하기',
-                            low: '- 상대방 표정과 톤 관찰하기'
-                        },
-                        match: {
-                            high: '- 부드럽지만 명확한 의사표현을 하는 사람',
-                            medium: '- 너무 자주 거절하는 사람',
-                            low: '- 심하게 예민하고 감정적인 사람'
-                        }
-                    },
-                    selfcenter: {
-                        caution: {
-                            high: '- 대화 중 상대방 이야기 끝까지 듣기',
-                            medium: '- 나와 상대방의 욕구 균형 맞추기',
-                            low: '- 자신의 욕구와 감정도 표현하기'
-                        },
-                        method: {
-                            high: '- 경청 기술 의식적으로 연습하기',
-                            medium: '- 건강한 주고받기 생활화',
-                            low: '- 건강한 자기 주장 연습하기'
-                        },
-                        task: {
-                            high: '- 대화 중 상대방 말 요약해서 확인하기',
-                            medium: '- 의견 차이 시 중간지점 찾기 연습',
-                            low: '- 원하는 것 3가지 적고 상대방에게 전달하기'
-                        },
-                        match: {
-                            high: '- 자기 주장이 명확하면서도 유연한 사람',
-                            medium: '- 항상 자기 희생만 하는 사람',
-                            low: '- 일방적으로 요구만 하는 사람'
-                        }
-                    },
-                    belief: {
-                        caution: {
-                            high: '- "연애는 이래야 해" 라는 고정관념 버리기',
-                            medium: '- 이상과 현실의 균형 맞추기',
-                            low: '- 관계에 대한 최소한의 기대치는 가지기'
-                        },
-                        method: {
-                            high: '- 다양한 사랑의 형태 인정하기',
-                            medium: '- 서로의 연애 가치관 공유하기',
-                            low: '- 건강한 관계의 기준 세우기'
-                        },
-                        task: {
-                            high: '- 연애 고정관념 3가지 적고 의미를 다시 생각하기',
-                            medium: '- 서로의 연애관에 대한 대화 시간 갖기',
-                            low: '- 관계에서 중요한 가치 3가지 정하기'
-                        },
-                        match: {
-                            high: '- 관계에 대해 유연하고 성숙한 관점을 가진 사람',
-                            medium: '- 지나치게 환상적이거나 비현실적인 사람',
-                            low: '- 모든 것을 드라마처럼 만들려는 사람'
-                        }
-                    }
-                };
-                
-                // 각 척도별 데이터 설정
-                for (const [key, score] of Object.entries(scores)) {
-                    const scale = scaleDescriptions[key];
-                    const average = score / (scale.max / 5);
-                    const level = average >= 4.0 ? 'high' : average >= 2.5 ? 'medium' : 'low';
-                    const levelText = average >= 4.0 ? '높음' : average >= 2.5 ? '보통' : '낮음';
-                    const color = average >= 4.0 ? '#ff6b6b' : '#667eea';
-                    
-                    emailData[`${key}_score`] = average.toFixed(1);
-                    emailData[`${key}_level`] = levelText;
-                    emailData[`${key}_color`] = color;
-                    emailData[`${key}_desc`] = scale[level];
-                    emailData[`${key}_caution`] = scaleDetails[key].caution[level];
-                    emailData[`${key}_method`] = scaleDetails[key].method[level];
-                    emailData[`${key}_task`] = scaleDetails[key].task[level];
-                    emailData[`${key}_match_title`] = level === 'high' ? '당신과 잘 맞는 관계 유형' : 
-                                                       level === 'medium' ? '피해야 할 관계 유형' : 
-                                                       '주의해야 할 관계 연애 상대';
-                    emailData[`${key}_match`] = scaleDetails[key].match[level];
-                }
-                
-                // 추가 조언
-                if (typeClass === 'type-danger') {
-                    emailData.additional_advice = '전문가의 도움을 받는 것을 강력히 권장합니다. 현재의 패턴이 지속되면 건강한 관계 형성이 어려울 수 있습니다. 상담을 통해 자신의 감정과 행동을 이해하고, 더 나은 관계를 만들어갈 수 있습니다.';
-                } else if (typeClass === 'type-warning') {
-                    emailData.additional_advice = '특정 상황에서 나타나는 행동 패턴에 주의를 기울이세요. 자기 성찰과 노력을 통해 충분히 개선할 수 있습니다. 필요시 전문가의 조언을 구하는 것도 좋은 방법입니다.';
-                } else if (typeClass === 'type-caution') {
-                    emailData.additional_advice = '전반적으로 건강한 연애를 할 수 있는 역량을 가지고 있습니다. 다만 일부 영역에서 주의가 필요하니, 제공된 실천 과제를 꾸준히 실행해보세요.';
-                } else {
-                    emailData.additional_advice = '매우 건강한 연애 성향을 가지고 있습니다! 현재의 긍정적인 태도를 유지하면서, 상대방과 함께 성장하는 아름다운 관계를 만들어가세요.';
-                }
-                
-                // 이메일 발송
-                emailjs.send('service_bm4sr1r', 'template_8kvuhuj', emailData)
-                    .then(function(response) {
-                        console.log('이메일 발송 성공!', response.status, response.text);
-                    }, function(error) {
-                        console.log('이메일 발송 실패...', error);
-                    });
-            }
-
-            // Google Sheets로 데이터 전송
-const sheetData = {
-    // 기본정보
-    name: name,
-    gender: document.querySelector('input[name="gender"]:checked').value,
-    age: document.getElementById('age').value,
-    marriage: document.getElementById('marriage').value,
-    education: document.getElementById('education').value,
-    job: document.getElementById('job').value,
+    }
     
-    // 연애경험
-    loveFreq: document.getElementById('loveFreq').value,
-    loveDuration: document.getElementById('loveDuration').value,
-    currentStatus: document.getElementById('currentStatus').value,
-    meetingMethod: document.getElementById('meetingMethod').value,
-    datingApp: document.querySelector('input[name="datingApp"]:checked').value,
-    socialMediaCheck: document.getElementById('socialMediaCheck').value,
-    contactFreq: document.getElementById('contactFreq').value,
-    replyWait: document.getElementById('replyWait').value,
+    if (phone) {
+        console.log('경품 추첨 대상:', phone);
+    }
     
-    // 44개 문항 응답
-    q1: document.querySelector('input[name="q1"]:checked')?.value || '',
-    q2: document.querySelector('input[name="q2"]:checked')?.value || '',
-    q3: document.querySelector('input[name="q3"]:checked')?.value || '',
-    q4: document.querySelector('input[name="q4"]:checked')?.value || '',
-    q5: document.querySelector('input[name="q5"]:checked')?.value || '',
-    q6: document.querySelector('input[name="q6"]:checked')?.value || '',
-    q7: document.querySelector('input[name="q7"]:checked')?.value || '',
-    q8: document.querySelector('input[name="q8"]:checked')?.value || '',
-    q9: document.querySelector('input[name="q9"]:checked')?.value || '',
-    q10: document.querySelector('input[name="q10"]:checked')?.value || '',
-    q11: document.querySelector('input[name="q11"]:checked')?.value || '',
-    q12: document.querySelector('input[name="q12"]:checked')?.value || '',
-    q13: document.querySelector('input[name="q13"]:checked')?.value || '',
-    q14: document.querySelector('input[name="q14"]:checked')?.value || '',
-    q15: document.querySelector('input[name="q15"]:checked')?.value || '',
-    q16: document.querySelector('input[name="q16"]:checked')?.value || '',
-    q17: document.querySelector('input[name="q17"]:checked')?.value || '',
-    q18: document.querySelector('input[name="q18"]:checked')?.value || '',
-    q19: document.querySelector('input[name="q19"]:checked')?.value || '',
-    q20: document.querySelector('input[name="q20"]:checked')?.value || '',
-    q21: document.querySelector('input[name="q21"]:checked')?.value || '',
-    q22: document.querySelector('input[name="q22"]:checked')?.value || '',
-    q23: document.querySelector('input[name="q23"]:checked')?.value || '',
-    q24: document.querySelector('input[name="q24"]:checked')?.value || '',
-    q25: document.querySelector('input[name="q25"]:checked')?.value || '',
-    q26: document.querySelector('input[name="q26"]:checked')?.value || '',
-    q27: document.querySelector('input[name="q27"]:checked')?.value || '',
-    q28: document.querySelector('input[name="q28"]:checked')?.value || '',
-    q29: document.querySelector('input[name="q29"]:checked')?.value || '',
-    q30: document.querySelector('input[name="q30"]:checked')?.value || '',
-    q31: document.querySelector('input[name="q31"]:checked')?.value || '',
-    q32: document.querySelector('input[name="q32"]:checked')?.value || '',
-    q33: document.querySelector('input[name="q33"]:checked')?.value || '',
-    q34: document.querySelector('input[name="q34"]:checked')?.value || '',
-    q35: document.querySelector('input[name="q35"]:checked')?.value || '',
-    q36: document.querySelector('input[name="q36"]:checked')?.value || '',
-    q37: document.querySelector('input[name="q37"]:checked')?.value || '',
-    q38: document.querySelector('input[name="q38"]:checked')?.value || '',
-    q39: document.querySelector('input[name="q39"]:checked')?.value || '',
-    q40: document.querySelector('input[name="q40"]:checked')?.value || '',
-    q41: document.querySelector('input[name="q41"]:checked')?.value || '',
-    q42: document.querySelector('input[name="q42"]:checked')?.value || '',
-    q43: document.querySelector('input[name="q43"]:checked')?.value || '',
-    q44: document.querySelector('input[name="q44"]:checked')?.value || '',
+    // Google Sheets로 데이터 전송
+    const sheetData = {
+        // 기본정보
+        name: name,
+        gender: document.querySelector('input[name="gender"]:checked').value,
+        age: document.getElementById('age').value,
+        marriage: document.getElementById('marriage').value,
+        education: document.getElementById('education').value,
+        job: document.getElementById('job').value,
+        
+        // 연애경험
+        loveFreq: document.getElementById('loveFreq').value,
+        loveDuration: document.getElementById('loveDuration').value,
+        currentStatus: document.getElementById('currentStatus').value,
+        meetingMethod: document.getElementById('meetingMethod').value,
+        datingApp: document.querySelector('input[name="datingApp"]:checked').value,
+        socialMediaCheck: document.getElementById('socialMediaCheck').value,
+        contactFreq: document.getElementById('contactFreq').value,
+        replyWait: document.getElementById('replyWait').value,
+        
+        // 44개 문항 응답
+        q1: document.querySelector('input[name="q1"]:checked')?.value || '',
+        q2: document.querySelector('input[name="q2"]:checked')?.value || '',
+        q3: document.querySelector('input[name="q3"]:checked')?.value || '',
+        q4: document.querySelector('input[name="q4"]:checked')?.value || '',
+        q5: document.querySelector('input[name="q5"]:checked')?.value || '',
+        q6: document.querySelector('input[name="q6"]:checked')?.value || '',
+        q7: document.querySelector('input[name="q7"]:checked')?.value || '',
+        q8: document.querySelector('input[name="q8"]:checked')?.value || '',
+        q9: document.querySelector('input[name="q9"]:checked')?.value || '',
+        q10: document.querySelector('input[name="q10"]:checked')?.value || '',
+        q11: document.querySelector('input[name="q11"]:checked')?.value || '',
+        q12: document.querySelector('input[name="q12"]:checked')?.value || '',
+        q13: document.querySelector('input[name="q13"]:checked')?.value || '',
+        q14: document.querySelector('input[name="q14"]:checked')?.value || '',
+        q15: document.querySelector('input[name="q15"]:checked')?.value || '',
+        q16: document.querySelector('input[name="q16"]:checked')?.value || '',
+        q17: document.querySelector('input[name="q17"]:checked')?.value || '',
+        q18: document.querySelector('input[name="q18"]:checked')?.value || '',
+        q19: document.querySelector('input[name="q19"]:checked')?.value || '',
+        q20: document.querySelector('input[name="q20"]:checked')?.value || '',
+        q21: document.querySelector('input[name="q21"]:checked')?.value || '',
+        q22: document.querySelector('input[name="q22"]:checked')?.value || '',
+        q23: document.querySelector('input[name="q23"]:checked')?.value || '',
+        q24: document.querySelector('input[name="q24"]:checked')?.value || '',
+        q25: document.querySelector('input[name="q25"]:checked')?.value || '',
+        q26: document.querySelector('input[name="q26"]:checked')?.value || '',
+        q27: document.querySelector('input[name="q27"]:checked')?.value || '',
+        q28: document.querySelector('input[name="q28"]:checked')?.value || '',
+        q29: document.querySelector('input[name="q29"]:checked')?.value || '',
+        q30: document.querySelector('input[name="q30"]:checked')?.value || '',
+        q31: document.querySelector('input[name="q31"]:checked')?.value || '',
+        q32: document.querySelector('input[name="q32"]:checked')?.value || '',
+        q33: document.querySelector('input[name="q33"]:checked')?.value || '',
+        q34: document.querySelector('input[name="q34"]:checked')?.value || '',
+        q35: document.querySelector('input[name="q35"]:checked')?.value || '',
+        q36: document.querySelector('input[name="q36"]:checked')?.value || '',
+        q37: document.querySelector('input[name="q37"]:checked')?.value || '',
+        q38: document.querySelector('input[name="q38"]:checked')?.value || '',
+        q39: document.querySelector('input[name="q39"]:checked')?.value || '',
+        q40: document.querySelector('input[name="q40"]:checked')?.value || '',
+        q41: document.querySelector('input[name="q41"]:checked')?.value || '',
+        q42: document.querySelector('input[name="q42"]:checked')?.value || '',
+        q43: document.querySelector('input[name="q43"]:checked')?.value || '',
+        q44: document.querySelector('input[name="q44"]:checked')?.value || '',
+        
+        // 척도별 점수
+        attachment_total: scores.attachment,
+        attachment_avg: (scores.attachment / 10).toFixed(1),
+        control_total: scores.control,
+        control_avg: (scores.control / 10).toFixed(1),
+        rejection_total: scores.rejection,
+        rejection_avg: (scores.rejection / 10).toFixed(1),
+        selfcenter_total: scores.selfcenter,
+        selfcenter_avg: (scores.selfcenter / 5).toFixed(1),
+        belief_total: scores.belief,
+        belief_avg: (scores.belief / 5).toFixed(1),
+        
+        // 심리스트레스
+        stress: document.getElementById('stress').value,
+        anxiety: document.getElementById('anxiety').value,
+        depression: document.getElementById('depression').value,
+        mentalDiagnosis: document.getElementById('mentalDiagnosis').value,
+        counseling: document.getElementById('counseling').value,
+        psychiatry: document.getElementById('psychiatry').value,
+        
+        // 애착문항
+        att1: document.querySelector('input[name="att1"]:checked')?.value || '',
+        att2: document.querySelector('input[name="att2"]:checked')?.value || '',
+        att3: document.querySelector('input[name="att3"]:checked')?.value || '',
+        att4: document.querySelector('input[name="att4"]:checked')?.value || '',
+        att5: document.querySelector('input[name="att5"]:checked')?.value || '',
+        att6: document.querySelector('input[name="att6"]:checked')?.value || '',
+        att7: document.querySelector('input[name="att7"]:checked')?.value || '',
+        att8: document.querySelector('input[name="att8"]:checked')?.value || '',
+        
+        // 기타
+        breakupReason: document.getElementById('breakupReason').value,
+        email: email || '',
+        phone: phone || '',
+        resultType: resultType.replace(/[🔴🟠🟡🟢]/g, '').trim(),
+        totalScore: totalScore
+    };
     
-    // 척도별 점수
-    attachment_total: scores.attachment,
-    attachment_avg: (scores.attachment / 10).toFixed(1),
-    control_total: scores.control,
-    control_avg: (scores.control / 10).toFixed(1),
-    rejection_total: scores.rejection,
-    rejection_avg: (scores.rejection / 10).toFixed(1),
-    selfcenter_total: scores.selfcenter,
-    selfcenter_avg: (scores.selfcenter / 5).toFixed(1),
-    belief_total: scores.belief,
-    belief_avg: (scores.belief / 5).toFixed(1),
+    // Apps Script URL - 여기에 배포 후 받은 URL 넣으세요
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-XbRYNrirFS6fp6rYMoEK9T43aZdgR2kqXZ7hmJPxrW0Utbr67gcxlgGAuB8M_jya/exec';
     
-    // 심리스트레스
-    stress: document.getElementById('stress').value,
-    anxiety: document.getElementById('anxiety').value,
-    depression: document.getElementById('depression').value,
-    mentalDiagnosis: document.getElementById('mentalDiagnosis').value,
-    counseling: document.getElementById('counseling').value,
-    psychiatry: document.getElementById('psychiatry').value,
-    
-    // 애착문항
-    att1: document.querySelector('input[name="att1"]:checked')?.value || '',
-    att2: document.querySelector('input[name="att2"]:checked')?.value || '',
-    att3: document.querySelector('input[name="att3"]:checked')?.value || '',
-    att4: document.querySelector('input[name="att4"]:checked')?.value || '',
-    att5: document.querySelector('input[name="att5"]:checked')?.value || '',
-    att6: document.querySelector('input[name="att6"]:checked')?.value || '',
-    att7: document.querySelector('input[name="att7"]:checked')?.value || '',
-    att8: document.querySelector('input[name="att8"]:checked')?.value || '',
-    
-    // 기타
-    breakupReason: document.getElementById('breakupReason').value,
-    email: email || '',
-    phone: phone || '',
-    resultType: resultType.replace(/[🔴🟠🟡🟢]/g, '').trim(),
-    totalScore: totalScore
-};
-
-// Apps Script URL - 여기에 배포 후 받은 URL 넣으세요
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-XbRYNrirFS6fp6rYMoEK9T43aZdgR2kqXZ7hmJPxrW0Utbr67gcxlgGAuB8M_jya/exec';
-
-fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(sheetData)
-})
-.then(() => console.log('데이터 저장 완료'))
-.catch(error => console.error('저장 실패:', error));
+    fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(sheetData)
+    })
+    .then(() => console.log('데이터 저장 완료'))
+    .catch(error => console.error('저장 실패:', error));
+}
                              
         // 초기화
         document.addEventListener('DOMContentLoaded', function() {
