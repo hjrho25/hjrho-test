@@ -3,217 +3,911 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>연애 성향 검사 간단 결과</title>
+    <title>연애 성향 검사</title>
     <style>
-        body { 
-            font-family: "맑은 고딕", sans-serif; 
-            padding: 2em; 
-            max-width: 700px; 
-            margin: auto;
-            background-color: #f5f5f5;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        h1 { 
-            color: #333366; 
-            font-size: 1.8em;
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 3px solid #667eea;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .question-text {
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        
+        .scale-options {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        
+        .scale-option {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .scale-option input[type="radio"] {
+            display: none;
+        }
+        
+        .scale-option label {
+            display: block;
+            padding: 10px 5px;
+            background: #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+        
+        .scale-option input[type="radio"]:checked + label {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.75em;
+            color: #6c757d;
+        }
+        
+        .demo-group {
+            margin-bottom: 20px;
+        }
+        
+        .demo-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .demo-group select,
+        .demo-group input[type="text"],
+        .demo-group input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .demo-group select:focus,
+        .demo-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .radio-item input[type="radio"] {
+            margin-right: 5px;
+        }
+        
+        .progress-bar {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+        
+        .progress-fill {
+            height: 10px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* 결과 섹션 스타일 */
+        .result-section {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        
+        .result-header {
+            text-align: center;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
             margin-bottom: 30px;
         }
-        .box { 
-            border: 1px solid #ccc; 
-            padding: 1.5em; 
-            margin-top: 2em; 
-            border-radius: 10px; 
-            background-color: #ffffff; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        
+        .result-type {
+            font-size: 2.5em;
+            margin: 20px 0;
+            font-weight: bold;
         }
-        .highlight { 
-            font-weight: bold; 
-            color: #cc0000; 
+        
+        .result-score {
+            font-size: 1.3em;
+            color: #666;
         }
-        .scale-block { 
-            margin-bottom: 1.2em; 
-            padding: 10px 0;
+        
+        .type-description {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            line-height: 1.8;
         }
+        
+        .scale-results {
+            margin-top: 40px;
+        }
+        
+        .scale-result {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #e0e0e0;
+        }
+        
+        .scale-result.caution {
+            border-left-color: #ff6b6b;
+            background: #fff5f5;
+        }
+        
         .scale-name {
             font-weight: bold;
             color: #333366;
         }
+        
+        .caution-icon {
+            color: #ff6b6b;
+            font-size: 1.2em;
+        }
+        
         .type-danger { color: #dc3545; }
         .type-warning { color: #fd7e14; }
         .type-caution { color: #ffc107; }
         .type-safe { color: #28a745; }
         
+        .email-notice {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        
         hr {
             border: none;
             border-top: 1px solid #e0e0e0;
-            margin: 20px 0;
+            margin: 25px 0;
         }
         
-        h3 {
-            color: #333366;
-            margin-bottom: 15px;
+        .error {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
         }
         
-        .warning-box {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin-top: 20px;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #666;
+        @media (max-width: 600px) {
+            .scale-options {
+                gap: 5px;
+            }
+            
+            .scale-option label {
+                padding: 8px 3px;
+                font-size: 0.8em;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>📋 연애 성향 검사 간단 결과</h1>
-    
-    <div id="loading" class="loading">결과를 불러오는 중입니다...</div>
-    
-    <div class="box" id="resultBox" style="display: none;">
-        <p><strong id="userName"></strong>님의 검사 결과는 <span class="highlight" id="resultType"></span>입니다.</p>
-        <p>총점: <strong id="totalScore"></strong></p>
-
-        <hr>
-        <h3>📊 하위 척도 요약</h3>
-        <div id="scaleResults"></div>
-
-        <hr>
-        <p>⚠️ 상세 해석과 맞춤 조언은 이메일 입력자에 한해 개별 발송되었습니다.</p>
-        <p>결과 리포트를 다시 받고 싶으시면 검사 마지막 페이지에서 이메일을 입력해주세요.</p>
-    </div>
-
-    <script>
-        // URL 파라미터 가져오기
-        function getUrlParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                name: params.get('name') || '검사자',
-                att: parseInt(params.get('att')) || 0,
-                con: parseInt(params.get('con')) || 0,
-                rej: parseInt(params.get('rej')) || 0,
-                self: parseInt(params.get('self')) || 0,
-                bel: parseInt(params.get('bel')) || 0,
-                dec1: parseInt(params.get('dec1')) || 0,
-                dec2: parseInt(params.get('dec2')) || 0
-            };
-        }
-
-        // 척도별 수준 판정
-        function getLevel(score, maxScore) {
-            const average = (score / maxScore) * 5;
-            if (average >= 4.0) return { level: '높음', caution: true };
-            else if (average >= 2.5) return { level: '보통', caution: false };
-            else return { level: '낮음', caution: false };
-        }
-
-        // 결과 표시
-        function displayResult() {
-            const params = getUrlParams();
+    <div class="container">
+        <div class="header">
+            <h1>💝 연애 성향 검사</h1>
+            <p>건강한 연애를 위한 첫걸음</p>
+        </div>
+        
+        <div class="progress-bar" id="progressBar">
+            <div style="background: #e9ecef; border-radius: 5px; overflow: hidden;">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="progress-text" id="progressText">0% 완료</div>
+        </div>
+        
+        <form id="testForm">
+            <!-- 기본 정보 섹션 -->
+            <div class="section">
+                <h2 class="section-title">기본 정보</h2>
+                
+                <div class="demo-group">
+                    <label for="name">이름 *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="demo-group">
+                    <label>성별 *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="gender1" name="gender" value="남성" required>
+                            <label for="gender1">남성</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="gender2" name="gender" value="여성" required>
+                            <label for="gender2">여성</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="gender3" name="gender" value="기타" required>
+                            <label for="gender3">기타</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="age">연령대 *</label>
+                    <select id="age" name="age" required>
+                        <option value="">선택하세요</option>
+                        <option value="10대">10대</option>
+                        <option value="20대">20대</option>
+                        <option value="30대">30대</option>
+                        <option value="40대">40대</option>
+                        <option value="50대 이상">50대 이상</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="marriage">결혼상태 *</label>
+                    <select id="marriage" name="marriage" required>
+                        <option value="">선택하세요</option>
+                        <option value="미혼">미혼</option>
+                        <option value="기혼">기혼</option>
+                        <option value="이혼">이혼</option>
+                        <option value="사별">사별</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="education">최종학력 *</label>
+                    <select id="education" name="education" required>
+                        <option value="">선택하세요</option>
+                        <option value="고졸 이하">고졸 이하</option>
+                        <option value="대학 재학">대학 재학</option>
+                        <option value="대학 졸업">대학 졸업</option>
+                        <option value="대학원 이상">대학원 이상</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="job">직업 *</label>
+                    <select id="job" name="job" required>
+                        <option value="">선택하세요</option>
+                        <option value="학생">학생</option>
+                        <option value="직장인">직장인</option>
+                        <option value="자영업">자영업</option>
+                        <option value="전문직">전문직</option>
+                        <option value="주부">주부</option>
+                        <option value="무직">무직</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+            </div>
             
-            // 이름 표시
-            document.getElementById('userName').textContent = params.name;
+            <!-- 연애 경험 섹션 -->
+            <div class="section">
+                <h2 class="section-title">연애 경험</h2>
+                
+                <div class="demo-group">
+                    <label for="loveFreq">연애경험 빈도 *</label>
+                    <select id="loveFreq" name="loveFreq" required>
+                        <option value="">선택하세요</option>
+                        <option value="없음">없음</option>
+                        <option value="1-2회">1-2회</option>
+                        <option value="3-5회">3-5회</option>
+                        <option value="6-10회">6-10회</option>
+                        <option value="10회 이상">10회 이상</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="loveDuration">평균 연애관계 기간 *</label>
+                    <select id="loveDuration" name="loveDuration" required>
+                        <option value="">선택하세요</option>
+                        <option value="없음">없음</option>
+                        <option value="3개월 미만">3개월 미만</option>
+                        <option value="3-6개월">3-6개월</option>
+                        <option value="6개월-1년">6개월-1년</option>
+                        <option value="1-2년">1-2년</option>
+                        <option value="2년 이상">2년 이상</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="currentStatus">현재 연애 상태 *</label>
+                    <select id="currentStatus" name="currentStatus" required>
+                        <option value="">선택하세요</option>
+                        <option value="연애 중">연애 중</option>
+                        <option value="썸타는 중">썸타는 중</option>
+                        <option value="짝사랑 중">짝사랑 중</option>
+                        <option value="이별 후 회복 중">이별 후 회복 중</option>
+                        <option value="연애하지 않음">연애하지 않음</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="meetingMethod">주로 연인을 만나는 방식 *</label>
+                    <select id="meetingMethod" name="meetingMethod" required>
+                        <option value="">선택하세요</option>
+                        <option value="일상생활(학교/직장)">일상생활(학교/직장)</option>
+                        <option value="소개팅">소개팅</option>
+                        <option value="데이팅앱">데이팅앱</option>
+                        <option value="동호회/모임">동호회/모임</option>
+                        <option value="기타">기타</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label>데이팅 앱 사용경험 *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="dating1" name="datingApp" value="사용 중" required>
+                            <label for="dating1">사용 중</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="dating2" name="datingApp" value="사용한 적 있음" required>
+                            <label for="dating2">사용한 적 있음</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="dating3" name="datingApp" value="사용한 적 없음" required>
+                            <label for="dating3">사용한 적 없음</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 핵심 검사 문항 섹션 -->
+            <div class="section">
+                <h2 class="section-title">검사 문항</h2>
+                <p style="margin-bottom: 20px; color: #6c757d;">각 문항을 읽고 자신과 가장 가까운 답변을 선택해주세요.</p>
+                
+                <div id="questionsContainer">
+                    <!-- 문항들이 JavaScript로 동적 생성됩니다 -->
+                </div>
+            </div>
+            
+            <!-- 정신건강 섹션 -->
+            <div class="section">
+                <h2 class="section-title">정신건강</h2>
+                
+                <div class="demo-group">
+                    <label for="stress">최근 1개월간 스트레스 빈도 *</label>
+                    <select id="stress" name="stress" required>
+                        <option value="">선택하세요</option>
+                        <option value="거의 없음">거의 없음</option>
+                        <option value="가끔">가끔</option>
+                        <option value="자주">자주</option>
+                        <option value="매우 자주">매우 자주</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="anxiety">최근 1개월간 불안 빈도 *</label>
+                    <select id="anxiety" name="anxiety" required>
+                        <option value="">선택하세요</option>
+                        <option value="거의 없음">거의 없음</option>
+                        <option value="가끔">가끔</option>
+                        <option value="자주">자주</option>
+                        <option value="매우 자주">매우 자주</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="depression">최근 1개월간 우울감 빈도 *</label>
+                    <select id="depression" name="depression" required>
+                        <option value="">선택하세요</option>
+                        <option value="거의 없음">거의 없음</option>
+                        <option value="가끔">가끔</option>
+                        <option value="자주">자주</option>
+                        <option value="매우 자주">매우 자주</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- 애착 유형 섹션 -->
+            <div class="section">
+                <h2 class="section-title">애착 유형 문항</h2>
+                <div id="attachmentContainer">
+                    <!-- 애착 문항들이 JavaScript로 동적 생성됩니다 -->
+                </div>
+            </div>
+            
+            <!-- 이메일 섹션 -->
+            <div class="section">
+                <h2 class="section-title">상세 결과 받기</h2>
+                <div class="demo-group">
+                    <label for="email">이메일 주소 (선택)</label>
+                    <input type="email" id="email" name="email" placeholder="example@email.com">
+                    <p style="margin-top: 10px; color: #6c757d; font-size: 0.9em;">
+                        이메일을 입력하시면 맞춤형 상세 분석과 구체적인 조언을 받으실 수 있습니다.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="submit-section">
+                <button type="submit" class="submit-btn" id="submitBtn">결과 확인하기</button>
+            </div>
+        </form>
+        
+        <!-- 결과 섹션 -->
+        <div class="result-section" id="resultSection" style="display: none;">
+            <div class="result-header">
+                <h2>📋 연애 성향 검사 간단 결과</h2>
+            </div>
+            
+            <div style="padding: 20px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 10px;">
+                <p><strong id="resultName"></strong>님의 검사 결과는 <span class="highlight" id="resultType" style="font-weight: bold; color: #cc0000;"></span>입니다.</p>
+                <p>총점: <strong id="totalScore"></strong></p>
+                
+                <hr>
+                <h3 style="color: #333366;">📊 하위 척도 요약</h3>
+                <div id="scaleResults"></div>
+                
+                <hr>
+                <div class="email-notice">
+                    <p>⚠️ 상세 해석과 맞춤 조언은 이메일 입력자에 한해 개별 발송되었습니다.</p>
+                    <p>결과 리포트를 다시 받고 싶으시면 검사 마지막 페이지에서 이메일을 입력해주세요.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 검사 문항 데이터
+        const questions = [
+            { id: 1, scale: 'attachment', text: '하루에도 여러 번 그 사람의 SNS를 몰래 확인하게 된다.' },
+            { id: 2, scale: 'control', text: '연인이 나와 상의 없이 개인 일정을 세우면 기분이 상한다.' },
+            { id: 3, scale: 'rejection', text: '고백을 거절당한 경험이 오래도록 마음에 남아 있다.' },
+            { id: 4, scale: 'selfcenter', text: '나만큼 좋아하지 않으면 상대방이 진심을 다하지 않는다고 생각한다.' },
+            { id: 5, scale: 'belief', text: '좋아하는 사람에게 하루에 몇 번씩 연락하는 건 당연한 행동이라고 생각한다.' },
+            { id: 6, scale: 'attachment', text: '상대가 바쁘다고 해도 내 연락에는 바로 답해줬으면 한다.' },
+            { id: 7, scale: 'control', text: '상대가 누구와 어디 있는지를 계속 알고 싶어진다.' },
+            { id: 8, scale: 'rejection', text: '단순한 \'선의\'나 \'호의\'도 나를 좋아하는 신호로 착각한 적 있다.' },
+            { id: 9, scale: 'selfcenter', text: '연애는 나의 진심을 먼저 보여주는 사람이 더 유리하다.' },
+            { id: 10, scale: 'belief', text: '상대가 부담스럽다고 해도 내 진심이면 받아들여야 한다고 믿는다.' },
+            { id: 11, scale: 'decision', text: '연락이 차단되면 다른 방법(다른 번호, 계정, 통장입금 등)으로라도 연락을 시도한다.' },
+            { id: 12, scale: 'attachment', text: '상대방의 일거수일투족을 다 알고 싶어진다.' },
+            { id: 13, scale: 'control', text: '연인이 다른 이성과 대화하는 것을 보면 불안하고 화가 난다.' },
+            { id: 14, scale: 'rejection', text: '한 번 거절당하면 그 사람에 대한 원망이 생긴다.' },
+            { id: 15, scale: 'selfcenter', text: '내가 좋아하면 상대도 나를 좋아해야 한다고 생각한다.' },
+            { id: 16, scale: 'check', text: '이 문항은 \'전혀 그렇지 않다\'를 선택해주세요.' },
+            { id: 17, scale: 'belief', text: '연락을 많이 하는 건 관심인데 불편해하는 것은 핑계일 뿐이다.' },
+            { id: 18, scale: 'attachment', text: '하루라도 연락이 없으면 불안해진다.' },
+            { id: 19, scale: 'control', text: '연인의 휴대폰을 보고 싶은 충동을 느낀다.' },
+            { id: 20, scale: 'rejection', text: '내 마음을 몰라주면 일부러 날 무시한다고 느껴진다.' },
+            { id: 21, scale: 'selfcenter', text: '내가 원하는 방식으로 사랑을 표현해주지 않으면 사랑이 아니다.' },
+            { id: 22, scale: 'decision', text: '상대가 원하지 않는다고 했는데도 지속적으로 온라인 메시지를 보내거나 연락을 시도한 적이 있다.' },
+            { id: 23, scale: 'attachment', text: '상대방이 다른 사람과 함께 있는 모습을 보면 질투가 난다.' },
+            { id: 24, scale: 'control', text: '연인의 과거 연애에 대해 자세히 알고 싶어한다.' },
+            { id: 25, scale: 'rejection', text: '관심을 보였던 사람이 무심해지면 감정기복이 커진다.' },
+            { id: 26, scale: 'selfcenter', text: '나의 감정이 가장 중요하고 우선시되어야 한다.' },
+            { id: 27, scale: 'attachment', text: '잠시라도 연락이 안 되면 무슨 일이 생긴 건 아닌지 걱정된다.' },
+            { id: 28, scale: 'control', text: '연인이 나 없이 즐거워하는 모습을 보면 서운하다.' },
+            { id: 29, scale: 'rejection', text: '누군가가 무심하게 구는 건 내 감정을 무시하는 일처럼 느껴진다.' },
+            { id: 30, scale: 'rejection', text: '누군가와 가까워지기 전부터 이미 거절을 두려워한다.' },
+            { id: 31, scale: 'check', text: '이 문항은 \'매우 그렇다\'를 선택해주세요.' },
+            { id: 32, scale: 'belief', text: '연애 중이라면 위치나 일정 공유는 당연하다고 생각한다.' },
+            { id: 33, scale: 'attachment', text: '상대방의 작은 변화도 놓치지 않고 파악한다.' },
+            { id: 34, scale: 'control', text: '연인이 내 말을 듣지 않으면 화가 난다.' },
+            { id: 35, scale: 'rejection', text: '내가 고백했는데 거절당하면 모욕감이나 분노를 느낀다.' },
+            { id: 36, scale: 'attachment', text: '상대방 없이는 하루도 못 살 것 같은 느낌이 든다.' },
+            { id: 37, scale: 'control', text: '연인의 친구 관계도 내가 관여해야 한다고 생각한다.' },
+            { id: 38, scale: 'control', text: '상대방이 나와 다른 의견을 가지면 설득하려고 한다.' },
+            { id: 39, scale: 'belief', text: '내가 하는 행동은 스토킹이 아니라 순수한 애정 표현이라고 생각한다.' },
+            { id: 40, scale: 'attachment', text: '헤어진 후에도 그 사람의 소식이 궁금해서 찾아본다.' },
+            { id: 41, scale: 'control', text: '연인이 나보다 다른 것을 우선시하면 배신감을 느낀다.' },
+            { id: 42, scale: 'rejection', text: '친구나 지인이 나보다 더 잘 지내는 걸 보면 소외감을 느낀다.' },
+            { id: 43, scale: 'attachment', text: '상대방의 SNS 활동을 계속 확인하게 된다.' },
+            { id: 44, scale: 'rejection', text: '애매하게 거절당하면 스스로 \'찌질하다\'는 생각이 든다.' }
+        ];
+        
+        // 애착 문항
+        const attachmentQuestions = [
+            '나는 다른 사람들과 가까워지는 것이 어렵다.',
+            '나는 버림받을까봐 걱정하는 편이다.',
+            '나는 다른 사람들이 나를 진정으로 이해하지 못한다고 느낀다.',
+            '나는 혼자 있는 것이 불편하다.',
+            '나는 다른 사람에게 의지하는 것이 불편하다.',
+            '나는 상대방이 나를 떠날까봐 불안하다.',
+            '나는 내 감정을 표현하는 것이 어렵다.',
+            '나는 관계에서 거리를 두는 편이다.'
+        ];
+        
+        // 문항 생성 함수
+        function generateQuestions() {
+            const container = document.getElementById('questionsContainer');
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-number">문항 ${q.id}</div>
+                    <div class="question-text">${q.text}</div>
+                    <div class="scale-options">
+                        <div class="scale-option">
+                            <input type="radio" id="q${q.id}_1" name="q${q.id}" value="1" required>
+                            <label for="q${q.id}_1">1</label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="q${q.id}_2" name="q${q.id}" value="2" required>
+                            <label for="q${q.id}_2">2</label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="q${q.id}_3" name="q${q.id}" value="3" required>
+                            <label for="q${q.id}_3">3</label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="q${q.id}_4" name="q${q.id}" value="4" required>
+                            <label for="q${q.id}_4">4</label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="q${q.id}_5" name="q${q.id}" value="5" required>
+                            <label for="q${q.id}_5">5</label>
+                        </div>
+                    </div>
+                    <div class="scale-labels">
+                        <span>전혀 그렇지 않다</span>
+                        <span>매우 그렇다</span>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+        
+        // 애착 문항 생성
+        function generateAttachmentQuestions() {
+            const container = document.getElementById('attachmentContainer');
+            
+            attachmentQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <div class="question-number">애착 문항 ${index + 1}</div>
+                    <div class="question-text">${q}</div>
+                    <div class="scale-options">
+                        <div class="scale-option">
+                            <input type="radio" id="att${index + 1}_1" name="att${index + 1}" value="1" required>
+                            <label for="att${index + 1}_1">1</label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="att${index + 1}_2" name="att${index + 1}" value="2" required>
+                            <label for="att${index + 1}_2">2</label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="att${index + 1}_3" name="att${index + 1}" value="3" required>
+                            <label for="att${index + 1}_3">3</label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="att${index + 1}_4" name="att${index + 1}" value="4" required>
+                            <label for="att${index + 1}_4">4</label>
+                        </div>
+                        <div class="scale-option">
+                            <input type="radio" id="att${index + 1}_5" name="att${index + 1}" value="5" required>
+                            <label for="att${index + 1}_5">5</label>
+                        </div>
+                    </div>
+                    <div class="scale-labels">
+                        <span>전혀 그렇지 않다</span>
+                        <span>매우 그렇다</span>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+        
+        // 진행률 업데이트
+        function updateProgress() {
+            const totalInputs = document.querySelectorAll('input[required], select[required]').length;
+            const filledInputs = document.querySelectorAll('input[required]:checked, select[required]:valid, input[type="text"][required]:valid, input[type="email"]:valid').length;
+            const progress = Math.round((filledInputs / totalInputs) * 100);
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '% 완료';
+        }
+        
+        // 결과 계산 및 표시
+        function calculateResult(e) {
+            e.preventDefault();
+            
+            // 주의점검 문항 확인
+            const check1 = document.querySelector('input[name="q16"]:checked');
+            const check2 = document.querySelector('input[name="q31"]:checked');
+            
+            if (!check1 || check1.value !== '1' || !check2 || check2.value !== '5') {
+                alert('주의점검 문항에 올바르게 응답해주세요.\n문항 16번은 "전혀 그렇지 않다"를, 문항 31번은 "매우 그렇다"를 선택해주세요.');
+                return;
+            }
+            
+            // 점수 계산
+            let scores = {
+                attachment: 0,
+                control: 0,
+                rejection: 0,
+                selfcenter: 0,
+                belief: 0
+            };
+            
+            let decisionCount = 0;
+            
+            questions.forEach(q => {
+                if (q.scale !== 'check' && q.scale !== 'decision') {
+                    const answer = document.querySelector(`input[name="q${q.id}"]:checked`);
+                    if (answer) {
+                        scores[q.scale] += parseInt(answer.value);
+                    }
+                } else if (q.scale === 'decision') {
+                    const answer = document.querySelector(`input[name="q${q.id}"]:checked`);
+                    if (answer && parseInt(answer.value) >= 4) {
+                        decisionCount++;
+                    }
+                }
+            });
             
             // 총점 계산
-            const scaleTotal = params.att + params.con + params.rej + params.self + params.bel;
-            const decisionScore = (params.dec1 * 5) + (params.dec2 * 5);
+            const scaleTotal = scores.attachment + scores.control + scores.rejection + 
+                             scores.selfcenter + scores.belief;
+            const decisionScore = decisionCount * 5;
             const totalScore = scaleTotal + decisionScore;
-            const hasDecisionItem = params.dec1 > 0 || params.dec2 > 0;
             
             // 결과 유형 판정
             let resultType = '';
             let typeClass = '';
+            let typeDescription = '';
             
-            if (hasDecisionItem && totalScore >= 158) {
+            if (decisionCount > 0 && totalScore >= 158) {
                 resultType = '🔴 위험형';
                 typeClass = 'type-danger';
-            } else if (hasDecisionItem && totalScore < 158) {
+                typeDescription = '귀하의 응답 결과, 즉시 주의가 필요한 행동 패턴이 발견되었습니다. 현재의 연애 방식이 상대방에게 부담을 주거나 관계에 부정적 영향을 미칠 가능성이 높습니다. 전문가의 도움을 통해 건강한 관계를 만들어갈 수 있습니다.';
+            } else if (decisionCount > 0 && totalScore < 158) {
                 resultType = '🟠 경계형';
                 typeClass = 'type-warning';
-            } else if (!hasDecisionItem && totalScore >= 147) {
+                typeDescription = '일부 우려되는 행동이 있지만, 전반적인 성향은 상대적으로 안정적입니다. 그러나 특정 상황에서 문제가 될 수 있는 행동들이 관찰되므로 주의가 필요합니다.';
+            } else if (decisionCount === 0 && totalScore >= 147) {
                 resultType = '🟡 주의형';
                 typeClass = 'type-caution';
+                typeDescription = '경계를 넘는 직접적 행동은 없지만, 내면의 집착 성향이 다소 높게 나타났습니다. 적절한 자기 관리와 성찰을 통해 건강한 연애를 할 수 있습니다.';
             } else {
                 resultType = '🟢 안정형';
                 typeClass = 'type-safe';
+                typeDescription = '매우 건강한 연애 성향을 보이고 있습니다! 상대방을 존중하고 적절한 거리감을 유지하며, 균형잡힌 관계를 형성할 수 있는 능력을 갖추고 있습니다.';
             }
             
+            // 결과 표시
+            const name = document.getElementById('name').value;
+            document.getElementById('resultName').textContent = name;
             document.getElementById('resultType').innerHTML = `<span class="${typeClass}">${resultType}</span>`;
             document.getElementById('totalScore').textContent = `${totalScore}점 / 210점`;
             
             // 척도별 결과
-            const scales = [
-                { name: '관계집착성', score: params.att, max: 50, 
-                  desc: {
-                    high: '상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.',
-                    medium: '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.',
-                    low: '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.'
-                  }
+            const scaleDescriptions = {
+                attachment: {
+                    name: '관계집착성',
+                    max: 50,
+                    desc: '상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.',
+                    high: '상대방에 대한 관심이 매우 강해요. 때로는 여유를 갖고 거리를 두는 것도 필요해요.',
+                    medium: '적당한 관심과 애착을 보여주는 편이에요. 균형감이 좋습니다.',
+                    low: '독립적이고 여유로운 연애 스타일이에요. 가끔은 더 적극적인 관심 표현도 좋을 거예요.'
                 },
-                { name: '통제욕구', score: params.con, max: 50,
-                  desc: {
-                    high: '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.',
-                    medium: '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.',
-                    low: '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.'
-                  }
+                control: {
+                    name: '통제욕구',
+                    max: 50,
+                    desc: '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.',
+                    high: '상대방을 이끌고 싶어하는 성향이 강해요. 상대방의 자율성을 더 존중해보세요.',
+                    medium: '적절한 수준에서 관계를 이끌어가는 편이에요.',
+                    low: '상대방의 자유를 잘 존중하는 편이에요. 때로는 더 적극적으로 의견을 표현해도 좋아요.'
                 },
-                { name: '거절민감성', score: params.rej, max: 50,
-                  desc: {
-                    high: '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.',
-                    medium: '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.',
-                    low: '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.'
-                  }
+                rejection: {
+                    name: '거절민감성',
+                    max: 50,
+                    desc: '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.',
+                    high: '거절에 매우 민감하게 반응하는 편이에요. 거절도 자연스러운 일임을 받아들여보세요.',
+                    medium: '거절에 대한 반응이 적절한 수준이에요.',
+                    low: '거절을 잘 받아들이는 성숙한 모습이에요. 좋은 장점입니다.'
                 },
-                { name: '자기중심성', score: params.self, max: 25,
-                  desc: {
-                    high: '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.',
-                    medium: '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.',
-                    low: '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.'
-                  }
+                selfcenter: {
+                    name: '자기중심성',
+                    max: 25,
+                    desc: '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.',
+                    high: '자신의 관점에서 상황을 해석하는 경향이 강해요. 상대방 입장에서 생각해보는 연습이 필요해요.',
+                    medium: '자신과 상대방의 관점을 적절히 고려하는 편이에요.',
+                    low: '상대방을 잘 배려하는 성향이에요. 균형감이 좋습니다.'
                 },
-                { name: '연애신념', score: params.bel, max: 25,
-                  desc: {
-                    high: '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.',
-                    medium: '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.',
-                    low: '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.'
-                  }
+                belief: {
+                    name: '연애신념',
+                    max: 25,
+                    desc: '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.',
+                    high: '연애에 대한 고정된 생각이 강한 편이에요. 좀 더 유연한 사고가 필요할 수 있어요.',
+                    medium: '연애에 대한 생각이 적절한 수준이에요.',
+                    low: '연애에 대해 유연하고 개방적인 사고를 갖고 있어요.'
                 }
-            ];
+            };
             
             let scaleHTML = '';
-            scales.forEach(scale => {
-                const average = (scale.score / scale.max) * 5;
-                const levelInfo = getLevel(scale.score, scale.max);
-                const cautionMark = levelInfo.caution ? ' ⚠️' : '';
+            
+            for (const [key, score] of Object.entries(scores)) {
+                const scale = scaleDescriptions[key];
+                const average = score / (scale.max / 5);
+                const isCaution = average >= 4.0;
                 
-                // 항상 동일한 설명 사용 (이미지와 일치하도록)
-                const description = scale.name === '관계집착성' ? '상대방에 대한 과도한 관심과 확인 욕구를 다루는 척도입니다.' :
-                                  scale.name === '통제욕구' ? '상대방의 일정, 행동, 관계를 조율하려는 경향입니다.' :
-                                  scale.name === '거절민감성' ? '거절이나 무시에 대한 정서적 반응 민감도를 측정합니다.' :
-                                  scale.name === '자기중심성' ? '연애에서 자신의 시각이나 감정에 집중하는 경향입니다.' :
-                                  '연애에 대한 고정관념 또는 이상화 경향을 측정합니다.';
+                let level, levelDesc;
+                if (average >= 4.0) {
+                    level = '높음';
+                    levelDesc = scale.high;
+                } else if (average >= 2.5) {
+                    level = '보통';
+                    levelDesc = scale.medium;
+                } else {
+                    level = '낮음';
+                    levelDesc = scale.low;
+                }
                 
                 scaleHTML += `
-                    <div class="scale-block">
-                        <span class="scale-name">${scale.name}${cautionMark}</span> 
-                        (${average.toFixed(1)}점, ${levelInfo.level}): ${description}
+                    <div style="margin-bottom: 1.2em;">
+                        <strong style="color: #333366;">${scale.name}${isCaution ? ' ⚠️' : ''}</strong> 
+                        (${average.toFixed(1)}점, ${level}): ${scale.desc}
                     </div>
                 `;
-            });
+            }
             
             document.getElementById('scaleResults').innerHTML = scaleHTML;
             
-            // 로딩 숨기고 결과 표시
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('resultBox').style.display = 'block';
+            // 폼 숨기고 결과 표시
+            document.getElementById('testForm').style.display = 'none';
+            document.getElementById('progressBar').style.display = 'none';
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // 스크롤 이동
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // 이메일 입력 확인
+            const email = document.getElementById('email').value;
+            if (email) {
+                // 여기에 이메일 발송 로직 추가 가능
+                console.log('이메일 발송 대상:', email);
+            }
         }
-
-        // 페이지 로드 시 결과 표시
-        window.onload = function() {
-            displayResult();
-        };
+        
+        // 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            generateQuestions();
+            generateAttachmentQuestions();
+            
+            // 진행률 업데이트 이벤트
+            document.querySelectorAll('input, select').forEach(element => {
+                element.addEventListener('change', updateProgress);
+                element.addEventListener('input', updateProgress);
+            });
+            
+            // 폼 제출 이벤트
+            document.getElementById('testForm').addEventListener('submit', calculateResult);
+        });
     </script>
 </body>
 </html>
