@@ -1241,6 +1241,124 @@ emailData.closing_message = '당신의 아름답고 건강한 연애를 응원�
                         console.log('이메일 발송 실패...', error);
                     });
             }
+
+            // Google Sheets로 데이터 전송
+const sheetData = {
+    // 기본정보
+    name: name,
+    gender: document.querySelector('input[name="gender"]:checked').value,
+    age: document.getElementById('age').value,
+    marriage: document.getElementById('marriage').value,
+    education: document.getElementById('education').value,
+    job: document.getElementById('job').value,
+    
+    // 연애경험
+    loveFreq: document.getElementById('loveFreq').value,
+    loveDuration: document.getElementById('loveDuration').value,
+    currentStatus: document.getElementById('currentStatus').value,
+    meetingMethod: document.getElementById('meetingMethod').value,
+    datingApp: document.querySelector('input[name="datingApp"]:checked').value,
+    socialMediaCheck: document.getElementById('socialMediaCheck').value,
+    contactFreq: document.getElementById('contactFreq').value,
+    replyWait: document.getElementById('replyWait').value,
+    
+    // 44개 문항 응답
+    q1: document.querySelector('input[name="q1"]:checked')?.value || '',
+    q2: document.querySelector('input[name="q2"]:checked')?.value || '',
+    q3: document.querySelector('input[name="q3"]:checked')?.value || '',
+    q4: document.querySelector('input[name="q4"]:checked')?.value || '',
+    q5: document.querySelector('input[name="q5"]:checked')?.value || '',
+    q6: document.querySelector('input[name="q6"]:checked')?.value || '',
+    q7: document.querySelector('input[name="q7"]:checked')?.value || '',
+    q8: document.querySelector('input[name="q8"]:checked')?.value || '',
+    q9: document.querySelector('input[name="q9"]:checked')?.value || '',
+    q10: document.querySelector('input[name="q10"]:checked')?.value || '',
+    q11: document.querySelector('input[name="q11"]:checked')?.value || '',
+    q12: document.querySelector('input[name="q12"]:checked')?.value || '',
+    q13: document.querySelector('input[name="q13"]:checked')?.value || '',
+    q14: document.querySelector('input[name="q14"]:checked')?.value || '',
+    q15: document.querySelector('input[name="q15"]:checked')?.value || '',
+    q16: document.querySelector('input[name="q16"]:checked')?.value || '',
+    q17: document.querySelector('input[name="q17"]:checked')?.value || '',
+    q18: document.querySelector('input[name="q18"]:checked')?.value || '',
+    q19: document.querySelector('input[name="q19"]:checked')?.value || '',
+    q20: document.querySelector('input[name="q20"]:checked')?.value || '',
+    q21: document.querySelector('input[name="q21"]:checked')?.value || '',
+    q22: document.querySelector('input[name="q22"]:checked')?.value || '',
+    q23: document.querySelector('input[name="q23"]:checked')?.value || '',
+    q24: document.querySelector('input[name="q24"]:checked')?.value || '',
+    q25: document.querySelector('input[name="q25"]:checked')?.value || '',
+    q26: document.querySelector('input[name="q26"]:checked')?.value || '',
+    q27: document.querySelector('input[name="q27"]:checked')?.value || '',
+    q28: document.querySelector('input[name="q28"]:checked')?.value || '',
+    q29: document.querySelector('input[name="q29"]:checked')?.value || '',
+    q30: document.querySelector('input[name="q30"]:checked')?.value || '',
+    q31: document.querySelector('input[name="q31"]:checked')?.value || '',
+    q32: document.querySelector('input[name="q32"]:checked')?.value || '',
+    q33: document.querySelector('input[name="q33"]:checked')?.value || '',
+    q34: document.querySelector('input[name="q34"]:checked')?.value || '',
+    q35: document.querySelector('input[name="q35"]:checked')?.value || '',
+    q36: document.querySelector('input[name="q36"]:checked')?.value || '',
+    q37: document.querySelector('input[name="q37"]:checked')?.value || '',
+    q38: document.querySelector('input[name="q38"]:checked')?.value || '',
+    q39: document.querySelector('input[name="q39"]:checked')?.value || '',
+    q40: document.querySelector('input[name="q40"]:checked')?.value || '',
+    q41: document.querySelector('input[name="q41"]:checked')?.value || '',
+    q42: document.querySelector('input[name="q42"]:checked')?.value || '',
+    q43: document.querySelector('input[name="q43"]:checked')?.value || '',
+    q44: document.querySelector('input[name="q44"]:checked')?.value || '',
+    
+    // 척도별 점수
+    attachment_total: scores.attachment,
+    attachment_avg: (scores.attachment / 10).toFixed(1),
+    control_total: scores.control,
+    control_avg: (scores.control / 10).toFixed(1),
+    rejection_total: scores.rejection,
+    rejection_avg: (scores.rejection / 10).toFixed(1),
+    selfcenter_total: scores.selfcenter,
+    selfcenter_avg: (scores.selfcenter / 5).toFixed(1),
+    belief_total: scores.belief,
+    belief_avg: (scores.belief / 5).toFixed(1),
+    
+    // 심리스트레스
+    stress: document.getElementById('stress').value,
+    anxiety: document.getElementById('anxiety').value,
+    depression: document.getElementById('depression').value,
+    mentalDiagnosis: document.getElementById('mentalDiagnosis').value,
+    counseling: document.getElementById('counseling').value,
+    psychiatry: document.getElementById('psychiatry').value,
+    
+    // 애착문항
+    att1: document.querySelector('input[name="att1"]:checked')?.value || '',
+    att2: document.querySelector('input[name="att2"]:checked')?.value || '',
+    att3: document.querySelector('input[name="att3"]:checked')?.value || '',
+    att4: document.querySelector('input[name="att4"]:checked')?.value || '',
+    att5: document.querySelector('input[name="att5"]:checked')?.value || '',
+    att6: document.querySelector('input[name="att6"]:checked')?.value || '',
+    att7: document.querySelector('input[name="att7"]:checked')?.value || '',
+    att8: document.querySelector('input[name="att8"]:checked')?.value || '',
+    
+    // 기타
+    breakupReason: document.getElementById('breakupReason').value,
+    email: email || '',
+    phone: phone || '',
+    resultType: resultType.replace(/[🔴🟠🟡🟢]/g, '').trim(),
+    totalScore: totalScore
+};
+
+// Apps Script URL - 여기에 배포 후 받은 URL 넣으세요
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-XbRYNrirFS6fp6rYMoEK9T43aZdgR2kqXZ7hmJPxrW0Utbr67gcxlgGAuB8M_jya/exec';
+
+fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(sheetData)
+})
+.then(() => console.log('데이터 저장 완료'))
+.catch(error => console.error('저장 실패:', error));
             
             // 전화번호 입력 확인 (경품)
             const phone = document.getElementById('phone').value;
