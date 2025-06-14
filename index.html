@@ -1073,8 +1073,11 @@ emailData.closing_message = '당신의 아름답고 건강한 연애를 응원�
             
             // 이메일 입력 확인
             const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
             if (email) {
                 console.log('이메일 발송 대상:', email);
+                       
                 
                 // 이메일 발송을 위한 상세 데이터 준비
                 const emailData = {
@@ -1086,6 +1089,11 @@ emailData.closing_message = '당신의 아름답고 건강한 연애를 응원�
                                  typeClass === 'type-caution' ? '#ffc107' : '#28a745',
                     type_description: typeDescription
                 };
+
+           }      
+            if (phone) {
+                console.log('경품 추첨 대상:', phone);
+            }
                 
                 // 각 척도별 상세 데이터 추가
                 const scaleDetails = {
@@ -1360,11 +1368,7 @@ fetch(APPS_SCRIPT_URL, {
 .then(() => console.log('데이터 저장 완료'))
 .catch(error => console.error('저장 실패:', error));
             
-            // 전화번호 입력 확인 (경품)
-            const phone = document.getElementById('phone').value;
-            if (phone) {
-                console.log('경품 추첨 대상:', phone);
-            }
+          
         }
         
         // 초기화
