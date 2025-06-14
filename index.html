@@ -990,17 +990,23 @@ if (!check1 || check1.value !== '1') {
     alert('문항 16번에서 "전혀 그렇지 않다"를 선택해주세요.');
     // 16번 문항으로 스크롤
     const question16 = document.getElementById('question_16');
+    console.log('question16 element:', question16); // 디버깅용
+    
     if (question16) {
         question16.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        // 문항 강조 효과 추가 (선택사항)
+        // 문항 강조 효과 추가
         question16.style.border = '3px solid #ff6b6b';
+        question16.style.backgroundColor = '#fff5f5';
         setTimeout(() => {
             question16.style.border = '';
+            question16.style.backgroundColor = '';
         }, 3000);
+    } else {
+        console.log('question_16 요소를 찾을 수 없습니다'); // 디버깅용
     }
     return;
 }
-
+    
 if (!check2 || check2.value !== '5') {
     alert('문항 31번에서 "매우 그렇다"를 선택해주세요.');
     // 31번 문항으로 스크롤
