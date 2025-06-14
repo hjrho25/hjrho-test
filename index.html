@@ -919,68 +919,68 @@
 function calculateResult(e) {
     e.preventDefault();
 
-       // 모든 필수 문항 검사
-    let firstMissingElement = null;
-    
-    // 1. 기본 정보 검사
-    const requiredFields = ['name', 'age', 'marriage', 'education', 'job', 
-                           'loveFreq', 'loveDuration', 'currentStatus', 'meetingMethod',
-                           'socialMediaCheck', 'contactFreq', 'replyWait', 
-                           'stress', 'anxiety', 'depression', 'mentalDiagnosis', 
-                           'counseling', 'psychiatry', 'breakupReason'];
-    
-    for (const fieldId of requiredFields) {
-        const field = document.getElementById(fieldId);
-        if (field && !field.value) {
-            firstMissingElement = field.closest('.demo-group');
+// 모든 필수 문항 검사
+let firstMissingElement = null;
+
+// 1. 기본 정보 검사
+const requiredFields = ['name', 'age', 'marriage', 'education', 'job', 
+                       'loveFreq', 'loveDuration', 'currentStatus', 'meetingMethod',
+                       'socialMediaCheck', 'contactFreq', 'replyWait', 
+                       'stress', 'anxiety', 'depression', 'mentalDiagnosis', 
+                       'counseling', 'psychiatry', 'breakupReason'];
+
+for (const fieldId of requiredFields) {
+    const field = document.getElementById(fieldId);
+    if (field && !field.value) {
+        firstMissingElement = field.closest('.demo-group');
+        break;
+    }
+}
+
+// 2. 라디오 버튼 검사 (gender, datingApp)
+if (!firstMissingElement && !document.querySelector('input[name="gender"]:checked')) {
+    firstMissingElement = document.getElementById('group_gender');
+}
+if (!firstMissingElement && !document.querySelector('input[name="datingApp"]:checked')) {
+    firstMissingElement = document.getElementById('group_datingApp');
+}
+
+// 3. 44개 검사 문항 검사
+if (!firstMissingElement) {
+    for (let i = 1; i <= 44; i++) {
+        if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+            firstMissingElement = document.getElementById(`question_${i}`);
             break;
         }
     }
-    
-    // 2. 라디오 버튼 검사 (gender, datingApp)
-    if (!firstMissingElement && !document.querySelector('input[name="gender"]:checked')) {
-        firstMissingElement = document.getElementById('group_gender');
-    }
-    if (!firstMissingElement && !document.querySelector('input[name="datingApp"]:checked')) {
-        firstMissingElement = document.getElementById('group_datingApp');
-    }
-    
-    // 3. 44개 검사 문항 검사
-    if (!firstMissingElement) {
-        for (let i = 1; i <= 44; i++) {
-            if (!document.querySelector(`input[name="q${i}"]:checked`)) {
-                firstMissingElement = document.getElementById(`question_${i}`);
-                break;
-            }
+}
+
+// 4. 8개 애착 문항 검사
+if (!firstMissingElement) {
+    for (let i = 1; i <= 8; i++) {
+        if (!document.querySelector(`input[name="att${i}"]:checked`)) {
+            firstMissingElement = document.getElementById(`attachment_${i}`);
+            break;
         }
     }
+}
+
+// 누락된 문항이 있으면 스크롤 및 강조 ← 이 부분이 중요합니다!
+if (firstMissingElement) {
+    alert('누락된 문항이 있습니다. 모든 문항에 응답해주세요.');
+    firstMissingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
-    // 4. 8개 애착 문항 검사
-    if (!firstMissingElement) {
-        for (let i = 1; i <= 8; i++) {
-            if (!document.querySelector(`input[name="att${i}"]:checked`)) {
-                firstMissingElement = document.getElementById(`attachment_${i}`);
-                break;
-            }
-        }
-    }
+    // 강조 효과
+    firstMissingElement.style.border = '3px solid #ff6b6b';
+    firstMissingElement.style.backgroundColor = '#fff5f5';
     
-    // 누락된 문항이 있으면 스크롤 및 강조
-    if (firstMissingElement) {
-        alert('누락된 문항이 있습니다. 모든 문항에 응답해주세요.');
-        firstMissingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // 강조 효과
-        firstMissingElement.style.border = '3px solid #ff6b6b';
-        firstMissingElement.style.backgroundColor = '#fff5f5';
-        
-        setTimeout(() => {
-            firstMissingElement.style.border = '';
-            firstMissingElement.style.backgroundColor = '';
-        }, 3000);
-        
-        return;
-    }
+    setTimeout(() => {
+        firstMissingElement.style.border = '';
+        firstMissingElement.style.backgroundColor = '';
+    }, 3000);
+    
+    return;  // ← 이 return이 있어야 합니다!
+}
     
     // 주의점검 문항 확인
     const check1 = document.querySelector('input[name="q16"]:checked');
