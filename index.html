@@ -918,15 +918,103 @@
 // 결과 계산 및 표시
 function calculateResult(e) {
     e.preventDefault();
+
+       // 모든 필수 문항 검사
+    let firstMissingElement = null;
+    
+    // 1. 기본 정보 검사
+    const requiredFields = ['name', 'age', 'marriage', 'education', 'job', 
+                           'loveFreq', 'loveDuration', 'currentStatus', 'meetingMethod',
+                           'socialMediaCheck', 'contactFreq', 'replyWait', 
+                           'stress', 'anxiety', 'depression', 'mentalDiagnosis', 
+                           'counseling', 'psychiatry', 'breakupReason'];
+    
+    for (const fieldId of requiredFields) {
+        const field = document.getElementById(fieldId);
+        if (field && !field.value) {
+            firstMissingElement = field.closest('.demo-group');
+            break;
+        }
+    }
+    
+    // 2. 라디오 버튼 검사 (gender, datingApp)
+    if (!firstMissingElement && !document.querySelector('input[name="gender"]:checked')) {
+        firstMissingElement = document.getElementById('group_gender');
+    }
+    if (!firstMissingElement && !document.querySelector('input[name="datingApp"]:checked')) {
+        firstMissingElement = document.getElementById('group_datingApp');
+    }
+    
+    // 3. 44개 검사 문항 검사
+    if (!firstMissingElement) {
+        for (let i = 1; i <= 44; i++) {
+            if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+                firstMissingElement = document.getElementById(`question_${i}`);
+                break;
+            }
+        }
+    }
+    
+    // 4. 8개 애착 문항 검사
+    if (!firstMissingElement) {
+        for (let i = 1; i <= 8; i++) {
+            if (!document.querySelector(`input[name="att${i}"]:checked`)) {
+                firstMissingElement = document.getElementById(`attachment_${i}`);
+                break;
+            }
+        }
+    }
+    
+    // 누락된 문항이 있으면 스크롤 및 강조
+    if (firstMissingElement) {
+        alert('누락된 문항이 있습니다. 모든 문항에 응답해주세요.');
+        firstMissingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // 강조 효과
+        firstMissingElement.style.border = '3px solid #ff6b6b';
+        firstMissingElement.style.backgroundColor = '#fff5f5';
+        
+        setTimeout(() => {
+            firstMissingElement.style.border = '';
+            firstMissingElement.style.backgroundColor = '';
+        }, 3000);
+        
+        return;
+    }
     
     // 주의점검 문항 확인
     const check1 = document.querySelector('input[name="q16"]:checked');
     const check2 = document.querySelector('input[name="q31"]:checked');
     
-    if (!check1 || check1.value !== '1' || !check2 || check2.value !== '5') {
-        alert('주의점검 문항에 올바르게 응답해주세요.\n문항 16번은 "전혀 그렇지 않다"를, 문항 31번은 "매우 그렇다"를 선택해주세요.');
-        return;
+if (!check1 || check1.value !== '1') {
+    alert('문항 16번에서 "전혀 그렇지 않다"를 선택해주세요.');
+    // 16번 문항으로 스크롤
+    const question16 = document.getElementById('question_16');
+    if (question16) {
+        question16.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 문항 강조 효과 추가 (선택사항)
+        question16.style.border = '3px solid #ff6b6b';
+        setTimeout(() => {
+            question16.style.border = '';
+        }, 3000);
     }
+    return;
+}
+
+if (!check2 || check2.value !== '5') {
+    alert('문항 31번에서 "매우 그렇다"를 선택해주세요.');
+    // 31번 문항으로 스크롤
+    const question31 = document.getElementById('question_31');
+    if (question31) {
+        question31.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 문항 강조 효과 추가 (선택사항)
+        question31.style.border = '3px solid #ff6b6b';
+        setTimeout(() => {
+            question31.style.border = '';
+        }, 3000);
+    }
+    return;
+}
     
     // 점수 계산
     let scores = {
@@ -1214,7 +1302,7 @@ function calculateResult(e) {
             emailData[`${key}_level`] = levelText;
             emailData[`${key}_color`] = color;
             emailData[`${key}_desc`] = scale[level];
-            emailData[`${key}_caution`] = scaleDetails[key].caution[level];
+            emailData[`${key}_caution`] = ' ' + scaleDetails[key].caution[level];
             emailData[`${key}_method`] = scaleDetails[key].method[level];
             emailData[`${key}_task`] = scaleDetails[key].task[level];
             emailData[`${key}_match_title`] = level === 'high' ? '당신과 잘 맞는 관계 유형' : 
