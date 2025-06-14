@@ -16,6 +16,7 @@
             background-color: #f5f7fa;
             color: #333;
             line-height: 1.6;
+            word-break: keep-all;
         }
         
         .container {
@@ -133,7 +134,8 @@
         
         .demo-group select,
         .demo-group input[type="text"],
-        .demo-group input[type="email"] {
+        .demo-group input[type="email"],
+        .demo-group input[type="tel"] {
             width: 100%;
             padding: 10px;
             border: 2px solid #e9ecef;
@@ -163,29 +165,19 @@
             margin-right: 5px;
         }
         
-        .progress-bar {
-            position: sticky;
-            top: 0;
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            z-index: 100;
+        .checkbox-group {
+            margin: 15px 0;
         }
         
-        .progress-fill {
-            height: 10px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 5px;
-            transition: width 0.3s ease;
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
         }
         
-        .progress-text {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 0.9em;
-            color: #6c757d;
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            margin-top: 3px;
         }
         
         .submit-section {
@@ -215,6 +207,34 @@
             cursor: not-allowed;
         }
         
+        /* 동의 섹션 스타일 */
+        .consent-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .consent-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #495057;
+        }
+        
+        .consent-content {
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: #6c757d;
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+        }
+        
         /* 결과 섹션 스타일 */
         .result-section {
             display: none;
@@ -238,17 +258,13 @@
             font-weight: bold;
         }
         
-        .result-score {
-            font-size: 1.3em;
-            color: #666;
-        }
-        
         .type-description {
             margin-top: 20px;
             padding: 20px;
             background: #f8f9fa;
             border-radius: 10px;
             line-height: 1.8;
+            text-align: left;
         }
         
         .scale-results {
@@ -261,6 +277,7 @@
             background: #f8f9fa;
             border-radius: 10px;
             border-left: 4px solid #e0e0e0;
+            word-break: keep-all;
         }
         
         .scale-result.caution {
@@ -303,6 +320,12 @@
             margin-top: 5px;
         }
         
+        .optional-notice {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
         @media (max-width: 600px) {
             .scale-options {
                 gap: 5px;
@@ -316,6 +339,10 @@
             .radio-group {
                 flex-direction: column;
             }
+            
+            .result-section {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -326,14 +353,48 @@
             <p>건강한 연애를 위한 첫걸음</p>
         </div>
         
-        <div class="progress-bar" id="progressBar">
-            <div style="background: #e9ecef; border-radius: 5px; overflow: hidden;">
-                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-            </div>
-            <div class="progress-text" id="progressText">0% 완료</div>
-        </div>
-        
         <form id="testForm">
+            <!-- 개인정보 수집 동의 섹션 -->
+            <div class="section">
+                <h2 class="section-title">개인정보 수집 및 이용 동의</h2>
+                <div class="consent-box">
+                    <div class="consent-title">개인정보 수집·이용 동의서</div>
+                    <div class="consent-content">
+                        <p><strong>1. 수집하는 개인정보 항목</strong></p>
+                        <p>- 필수항목: 이름, 성별, 연령대, 검사 응답 내용</p>
+                        <p>- 선택항목: 이메일 주소, 전화번호</p>
+                        <br>
+                        <p><strong>2. 개인정보의 수집 및 이용목적</strong></p>
+                        <p>- 연애 성향 검사 결과 제공</p>
+                        <p>- 맞춤형 상담 및 조언 제공</p>
+                        <p>- 경품 추첨 및 지급 (선택 시)</p>
+                        <br>
+                        <p><strong>3. 개인정보의 보유 및 이용기간</strong></p>
+                        <p>- 검사 결과 제공 후 1년간 보관</p>
+                        <p>- 이용자의 삭제 요청 시 즉시 파기</p>
+                        <br>
+                        <p><strong>4. 동의 거부권 및 불이익</strong></p>
+                        <p>- 개인정보 수집 동의를 거부할 권리가 있습니다.</p>
+                        <p>- 필수항목 동의 거부 시 검사 진행이 불가능합니다.</p>
+                        <p>- 선택항목 동의 거부 시 해당 서비스 이용이 제한됩니다.</p>
+                    </div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="consent1" name="consent1" required>
+                            <label for="consent1">[필수] 개인정보 수집 및 이용에 동의합니다.</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="consent2" name="consent2">
+                            <label for="consent2">[선택] 검사 결과 이메일 수신에 동의합니다.</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="consent3" name="consent3">
+                            <label for="consent3">[선택] 경품 추첨을 위한 전화번호 수집에 동의합니다.</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- 기본 정보 섹션 -->
             <div class="section">
                 <h2 class="section-title">기본 정보</h2>
@@ -402,7 +463,7 @@
                         <option value="">선택하세요</option>
                         <option value="학생">학생</option>
                         <option value="직장인">직장인</option>
-                        <option value="자영업">자영업</option>
+                        <option value="자영업/프리랜서">자영업/프리랜서</option>
                         <option value="전문직">전문직</option>
                         <option value="주부">주부</option>
                         <option value="무직">무직</option>
@@ -422,7 +483,7 @@
                         <option value="없음">없음</option>
                         <option value="1-2회">1-2회</option>
                         <option value="3-5회">3-5회</option>
-                        <option value="6-10회">6-10회</option>
+                        <option value="6-9회">6-9회</option>
                         <option value="10회 이상">10회 이상</option>
                     </select>
                 </div>
@@ -481,6 +542,46 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="demo-group">
+                    <label for="socialMediaCheck">소셜미디어를 통해 연인의 활동을 확인하는 빈도 *</label>
+                    <select id="socialMediaCheck" name="socialMediaCheck" required>
+                        <option value="">선택하세요</option>
+                        <option value="전혀 확인하지 않음">전혀 확인하지 않음</option>
+                        <option value="주 1-2회">주 1-2회</option>
+                        <option value="매일 확인함">매일 확인함</option>
+                        <option value="하루에 1-2회 확인함">하루에 1-2회 확인함</option>
+                        <option value="하루에 여러 번 확인함">하루에 여러 번 확인함</option>
+                        <option value="해당 없음">해당 없음(소셜미디어 사용 안 함)</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="contactFreq">연인과의 연락 빈도 *</label>
+                    <select id="contactFreq" name="contactFreq" required>
+                        <option value="">선택하세요</option>
+                        <option value="하루에 여러 번">하루에 여러 번</option>
+                        <option value="하루에 한 번">하루에 한 번</option>
+                        <option value="2-3일에 한 번">2-3일에 한 번</option>
+                        <option value="일주일에 한 번">일주일에 한 번</option>
+                        <option value="그보다 드물게">그보다 드물게</option>
+                        <option value="현재 연인 없음">현재 연인 없음</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="replyWait">연인의 답장을 언제까지 기다릴 수 있나요? *</label>
+                    <select id="replyWait" name="replyWait" required>
+                        <option value="">선택하세요</option>
+                        <option value="즉시">즉시</option>
+                        <option value="1시간">1시간</option>
+                        <option value="일과후">일과후</option>
+                        <option value="취침전">취침전</option>
+                        <option value="2일">2일</option>
+                        <option value="1주일">1주일</option>
+                        <option value="상관없음">상관없음</option>
+                    </select>
+                </div>
             </div>
             
             <!-- 핵심 검사 문항 섹션 -->
@@ -493,9 +594,9 @@
                 </div>
             </div>
             
-            <!-- 정신건강 섹션 -->
+            <!-- 심리 스트레스 섹션 -->
             <div class="section">
-                <h2 class="section-title">정신건강</h2>
+                <h2 class="section-title">심리 스트레스</h2>
                 
                 <div class="demo-group">
                     <label for="stress">최근 1개월간 스트레스 빈도 *</label>
@@ -529,25 +630,79 @@
                         <option value="매우 자주">매우 자주</option>
                     </select>
                 </div>
-            </div>
-            
-            <!-- 애착 유형 섹션 -->
-            <div class="section">
-                <h2 class="section-title">애착 유형 문항</h2>
+                
+                <div class="demo-group">
+                    <label for="mentalDiagnosis">정신 건강 관련 진단을 받은 적이 있으십니까? *</label>
+                    <select id="mentalDiagnosis" name="mentalDiagnosis" required>
+                        <option value="">선택하세요</option>
+                        <option value="없음">없음</option>
+                        <option value="있음">있음</option>
+                        <option value="응답하고 싶지 않음">응답하고 싶지 않음</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="counseling">상담을 받은 적이 있으십니까? *</label>
+                    <select id="counseling" name="counseling" required>
+                        <option value="">선택하세요</option>
+                        <option value="있음">있음</option>
+                        <option value="없음">없음</option>
+                        <option value="응답하고 싶지 않음">응답하고 싶지 않음</option>
+                    </select>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="psychiatry">정신건강의학과 진료를 받은 적이 있으십니까? *</label>
+                    <select id="psychiatry" name="psychiatry" required>
+                        <option value="">선택하세요</option>
+                        <option value="있음">있음</option>
+                        <option value="없음">없음</option>
+                        <option value="응답하고 싶지 않음">응답하고 싶지 않음</option>
+                    </select>
+                </div>
+                
+                <!-- 애착 관련 문항들 -->
                 <div id="attachmentContainer">
                     <!-- 애착 문항들이 JavaScript로 동적 생성됩니다 -->
                 </div>
+                
+                <div class="demo-group">
+                    <label for="breakupReason">마지막 연애에서 연인과 무엇 때문에 헤어졌나요? *</label>
+                    <select id="breakupReason" name="breakupReason" required>
+                        <option value="">선택하세요</option>
+                        <option value="성격차이">성격차이</option>
+                        <option value="의사소통 문제">의사소통 문제</option>
+                        <option value="시간과 관심 부족">시간과 관심 부족</option>
+                        <option value="신뢰문제">신뢰문제</option>
+                        <option value="미래에 대한 목표차이">미래에 대한 목표차이</option>
+                        <option value="가족문제">가족문제</option>
+                        <option value="권태기">권태기</option>
+                        <option value="경제적 문제">경제적 문제</option>
+                        <option value="외부 요인">외부 요인(장거리 연애 등)</option>
+                        <option value="자기 성장과 변화">자기 성장과 변화</option>
+                        <option value="과도한 집착과 통제">과도한 집착과 통제</option>
+                        <option value="지나친 의심과 질투">지나친 의심과 질투</option>
+                        <option value="상대방의 요청을 존중하지 않을 때">상대방의 요청을 존중하지 않을 때</option>
+                        <option value="해당없음">해당없음(연애 경험 없음)</option>
+                    </select>
+                </div>
             </div>
             
-            <!-- 이메일 섹션 -->
+            <!-- 연락처 섹션 -->
             <div class="section">
-                <h2 class="section-title">상세 결과 받기</h2>
+                <h2 class="section-title">결과 수신 및 경품</h2>
+                
                 <div class="demo-group">
-                    <label for="email">이메일 주소 (선택)</label>
+                    <label for="email">이메일 주소</label>
                     <input type="email" id="email" name="email" placeholder="example@email.com">
-                    <p style="margin-top: 10px; color: #6c757d; font-size: 0.9em;">
-                        이메일을 입력하시면 맞춤형 상세 분석과 구체적인 조언을 받으실 수 있습니다.
-                    </p>
+                    <p class="optional-notice">상세 분석과 맞춤형 조언을 이메일로 받으실 수 있습니다. (선택)</p>
+                </div>
+                
+                <div class="demo-group">
+                    <label for="phone">전화번호</label>
+                    <input type="tel" id="phone" name="phone" placeholder="010-0000-0000">
+                    <p class="optional-notice">경품 추첨에 참여하시려면 전화번호를 입력해주세요. (선택)</p>
+                    <p class="optional-notice">* 추첨을 통해 소정의 상품을 드립니다.</p>
                 </div>
             </div>
             
@@ -557,14 +712,15 @@
         </form>
         
         <!-- 결과 섹션 -->
-        <div class="result-section" id="resultSection" style="display: none;">
+        <div class="result-section" id="resultSection">
             <div class="result-header">
                 <h2>📋 연애 성향 검사 간단 결과</h2>
             </div>
             
             <div style="padding: 20px; background: #f9f9f9; border: 1px solid #ccc; border-radius: 10px;">
                 <p><strong id="resultName"></strong>님의 검사 결과는 <span class="highlight" id="resultType" style="font-weight: bold; color: #cc0000;"></span>입니다.</p>
-                <p>총점: <strong id="totalScore"></strong></p>
+                
+                <div class="type-description" id="typeDescription"></div>
                 
                 <hr>
                 <h3 style="color: #333366;">📊 하위 척도 요약</h3>
@@ -630,14 +786,14 @@
         
         // 애착 문항
         const attachmentQuestions = [
-            '나는 다른 사람들과 가까워지는 것이 어렵다.',
-            '나는 버림받을까봐 걱정하는 편이다.',
-            '나는 다른 사람들이 나를 진정으로 이해하지 못한다고 느낀다.',
-            '나는 혼자 있는 것이 불편하다.',
-            '나는 다른 사람에게 의지하는 것이 불편하다.',
-            '나는 상대방이 나를 떠날까봐 불안하다.',
-            '나는 내 감정을 표현하는 것이 어렵다.',
-            '나는 관계에서 거리를 두는 편이다.'
+            '가까운 사람이 나를 떠날까 봐 자주 걱정한다.',
+            '다른 사람들과 정서적으로 너무 가까워지는 것이 불편하다.',
+            '거절당하면 극도로 불안하거나 화가 난다.',
+            '화가 나면 내 감정을 조절하기 어렵다.',
+            '충동적으로 행동한 후 후회하는 경우가 많다.',
+            '타인의 의도를 부정적으로 해석하는 경향이 있다.',
+            '내가 중요하게 생각하는 사람이 나를 소홀히 대하면 심하게 상처받는다.',
+            '나는 스트레스 상황에서 건설적인 방식으로 대처하는 편이다.'
         ];
         
         // 문항 생성 함수
@@ -647,6 +803,7 @@
             questions.forEach((q, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
+                questionDiv.id = `question_${q.id}`;
                 questionDiv.innerHTML = `
                     <div class="question-number">문항 ${q.id}</div>
                     <div class="question-text">${q.text}</div>
@@ -688,8 +845,9 @@
             attachmentQuestions.forEach((q, index) => {
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
+                questionDiv.id = `attachment_${index + 1}`;
                 questionDiv.innerHTML = `
-                    <div class="question-number">애착 문항 ${index + 1}</div>
+                    <div class="question-number">심리 문항 ${index + 1}</div>
                     <div class="question-text">${q}</div>
                     <div class="scale-options">
                         <div class="scale-option">
@@ -722,14 +880,16 @@
             });
         }
         
-        // 진행률 업데이트
-        function updateProgress() {
-            const totalInputs = document.querySelectorAll('input[required], select[required]').length;
-            const filledInputs = document.querySelectorAll('input[required]:checked, select[required]:valid, input[type="text"][required]:valid, input[type="email"]:valid').length;
-            const progress = Math.round((filledInputs / totalInputs) * 100);
+        // 자동 스크롤 함수
+        function scrollToNextQuestion(currentQuestionId) {
+            const currentElement = document.getElementById(currentQuestionId);
+            const nextElement = currentElement.nextElementSibling;
             
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = progress + '% 완료';
+            if (nextElement && nextElement.classList.contains('question')) {
+                setTimeout(() => {
+                    nextElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            }
         }
         
         // 결과 계산 및 표시
@@ -803,7 +963,7 @@
             const name = document.getElementById('name').value;
             document.getElementById('resultName').textContent = name;
             document.getElementById('resultType').innerHTML = `<span class="${typeClass}">${resultType}</span>`;
-            document.getElementById('totalScore').textContent = `${totalScore}점 / 210점`;
+            document.getElementById('typeDescription').textContent = typeDescription;
             
             // 척도별 결과
             const scaleDescriptions = {
@@ -869,8 +1029,8 @@
                 }
                 
                 scaleHTML += `
-                    <div style="margin-bottom: 1.2em;">
-                        <strong style="color: #333366;">${scale.name}${isCaution ? ' ⚠️' : ''}</strong> 
+                    <div class="scale-result ${isCaution ? 'caution' : ''}">
+                        <strong class="scale-name">${scale.name}${isCaution ? ' ⚠️' : ''}</strong> 
                         (${average.toFixed(1)}점, ${level}): ${scale.desc}
                     </div>
                 `;
@@ -880,7 +1040,6 @@
             
             // 폼 숨기고 결과 표시
             document.getElementById('testForm').style.display = 'none';
-            document.getElementById('progressBar').style.display = 'none';
             document.getElementById('resultSection').style.display = 'block';
             
             // 스크롤 이동
@@ -889,8 +1048,13 @@
             // 이메일 입력 확인
             const email = document.getElementById('email').value;
             if (email) {
-                // 여기에 이메일 발송 로직 추가 가능
                 console.log('이메일 발송 대상:', email);
+            }
+            
+            // 전화번호 입력 확인 (경품)
+            const phone = document.getElementById('phone').value;
+            if (phone) {
+                console.log('경품 추첨 대상:', phone);
             }
         }
         
@@ -899,10 +1063,14 @@
             generateQuestions();
             generateAttachmentQuestions();
             
-            // 진행률 업데이트 이벤트
-            document.querySelectorAll('input, select').forEach(element => {
-                element.addEventListener('change', updateProgress);
-                element.addEventListener('input', updateProgress);
+            // 자동 스크롤 이벤트 추가
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const questionElement = this.closest('.question');
+                    if (questionElement && questionElement.id) {
+                        scrollToNextQuestion(questionElement.id);
+                    }
+                });
             });
             
             // 폼 제출 이벤트
