@@ -399,11 +399,11 @@
             <!-- 기본 정보 섹션 -->
             <div class="section">
                 <h2 class="section-title">기본 정보</h2>
-            <!--    
+             
                 <div class="demo-group" id="group_name">
                     <label for="name">이름 또는 별칭 *</label>
                     <input type="text" id="name" name="name" required>
-                </div> -->
+                </div> 
                 
                 <div class="demo-group" id="group_gender">
                     <label>성별 *</label>
@@ -1346,6 +1346,7 @@ if (!check2 || check2.value !== '5') {
     // Google Sheets로 데이터 전송
     const sheetData = {
         // 기본정보
+       name: name,
        gender: document.querySelector('input[name="gender"]:checked').value,
         age: document.getElementById('age').value,
         marriage: document.getElementById('marriage').value,
